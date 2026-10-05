@@ -1,0 +1,130 @@
+<section 
+  #heroSection
+  class="hero-section" 
+  (mousemove)="onMouseMove($event)"
+  aria-label="Presentación principal Danna Castrillón"
+>
+  <!-- Background Botanical Aura Blobs -->
+  <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+  <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+  <div class="hero-botanical-vector" aria-hidden="true">
+    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M200 40C220 120 280 180 360 200C280 220 220 280 200 360C180 280 120 220 40 200C120 180 180 120 200 40Z" stroke="#AFC4A8" stroke-width="1.5" stroke-opacity="0.35" stroke-dasharray="4 4" />
+      <circle cx="200" cy="200" r="130" stroke="#1E5C46" stroke-width="1" stroke-opacity="0.2" />
+    </svg>
+  </div>
+
+  <div class="container-custom hero-grid">
+    <!-- Left Column: Editorial Copy & CTAs -->
+    <div class="hero-content">
+      <div class="hero-eyebrow-wrapper">
+        <span class="eyebrow">
+          <span class="dot-indicator"></span>
+          MASAJE · TERAPIA FÍSICA · BIENESTAR
+        </span>
+      </div>
+
+      <h1 class="headline-hero hero-headline">
+        <span class="hero-word-row">
+          <span class="hero-word">Tu</span>
+          <span class="hero-word">cuerpo</span>
+        </span>
+        <span class="hero-word-row">
+          <span class="hero-word">también</span>
+          <span class="hero-word">necesita</span>
+        </span>
+        <span class="hero-word-row">
+          <span class="hero-word highlight-organic">una pausa.</span>
+        </span>
+      </h1>
+
+      <p class="hero-lead-text">
+        Libera tensión, reduce el estrés y vuelve a sentirte mejor con cuidado profesional en un espacio sereno pensado exclusivamente para tu descanso.
+      </p>
+
+      <div class="hero-cta-group">
+        <a 
+          [href]="getWhatsAppBookingUrl()" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn-whatsapp hero-primary-cta"
+          aria-label="Agenda tu cita por WhatsApp con Danna"
+        >
+          <app-icon name="whatsapp" [size]="22" />
+          <span>Agenda tu cita</span>
+        </a>
+
+        <a href="#servicios" class="btn-secondary hero-secondary-cta">
+          <span>Conoce los servicios</span>
+          <app-icon name="arrow-right" [size]="18" />
+        </a>
+      </div>
+
+      <!-- Quick Trust Indicators -->
+      <div class="hero-trust-bar">
+        <div class="trust-pill">
+          <div class="stars-group">
+            <app-icon name="star" [size]="14" customClass="text-gold" />
+            <app-icon name="star" [size]="14" customClass="text-gold" />
+            <app-icon name="star" [size]="14" customClass="text-gold" />
+            <app-icon name="star" [size]="14" customClass="text-gold" />
+            <app-icon name="star" [size]="14" customClass="text-gold" />
+          </div>
+          <span class="trust-text">5.0 · Atención 1 a 1</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <app-icon name="shield-check" [size]="16" customClass="text-botanical" />
+          <span>Terapia con base anatómica</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Large Authentic Portrait of Danna with Organic Mask -->
+    <div 
+      class="hero-visual" 
+      #imageWrapper
+      [style.transform]="'translate3d(' + mouseX() + 'px, ' + mouseY() + 'px, 0)'"
+    >
+      <div class="visual-wrapper">
+        <!-- Botanical decorative backdrop contour -->
+        <div class="organic-backdrop-aura animate-morph"></div>
+
+        <!-- Therapist Portrait Frame with Organic Mask -->
+        <div class="hero-portrait-frame">
+          <img 
+            src="assets/images/danna-hero.jpg" 
+            alt="Danna Castrillón en su consultorio de terapia física y masaje en Bogotá" 
+            class="hero-therapist-img"
+            width="640" 
+            height="720"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <div class="hero-img-overlay-tint"></div>
+        </div>
+
+        <!-- Floating Badge Card: Location & Home Visit -->
+        <div 
+          class="hero-floating-card glass-card"
+          #floatingCard
+          [style.transform]="'translate3d(' + (mouseX() * -0.6) + 'px, ' + (mouseY() * -0.6) + 'px, 0)'"
+        >
+          <div class="card-icon-circle">
+            <app-icon name="map-pin" [size]="20" customClass="text-botanical" />
+          </div>
+          <div class="card-text">
+            <strong class="card-title">La Soledad · Teusaquillo</strong>
+            <span class="card-desc">Atención en consultorio y a domicilio en Bogotá</span>
+          </div>
+        </div>
+
+        <!-- Secondary subtle status pill -->
+        <div class="hero-status-pill glass-card">
+          <span class="status-pulse"></span>
+          <span class="status-text">Agenda disponible esta semana</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

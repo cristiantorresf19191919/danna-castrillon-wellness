@@ -1,0 +1,69 @@
+<section id="preguntas-frecuentes" class="faq-section section-padding" aria-labelledby="faq-title">
+  <div class="container-custom">
+    <!-- Header -->
+    <div class="section-header-centered">
+      <span class="eyebrow">
+        <app-icon name="info" [size]="16" customClass="text-botanical" />
+        RESPUESTAS CLARAS
+      </span>
+      <h2 id="faq-title" class="headline-section">
+        Preguntas frecuentes
+      </h2>
+      <p class="subtitle-section mx-auto">
+        Todo lo que necesitas saber antes de tu primera sesión de masaje o terapia física con Danna.
+      </p>
+    </div>
+
+    <!-- Accordion List -->
+    <div class="faq-accordion-container" role="region" aria-label="Acordeón de preguntas frecuentes">
+      @for (faq of faqs(); track faq.id) {
+        <div class="faq-item glass-card" [class.is-active]="isOpen(faq.id)">
+          <button 
+            type="button" 
+            class="faq-trigger"
+            [attr.aria-expanded]="isOpen(faq.id)"
+            [attr.aria-controls]="'faq-answer-' + faq.id"
+            (click)="toggleFaq(faq.id)"
+          >
+            <span class="faq-question-text">{{ faq.question }}</span>
+            <div class="faq-icon-indicator" [class.rotated]="isOpen(faq.id)">
+              <app-icon name="chevron-down" [size]="18" />
+            </div>
+          </button>
+
+          <div 
+            [id]="'faq-answer-' + faq.id" 
+            class="faq-content-panel"
+            [class.open]="isOpen(faq.id)"
+            role="region"
+            [attr.aria-labelledby]="'faq-trigger-' + faq.id"
+          >
+            <div class="faq-content-inner">
+              <p class="faq-answer-text">{{ faq.answer }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Still have questions CTA card -->
+    <div class="faq-support-box glass-card">
+      <div class="support-icon">
+        <app-icon name="message-circle" [size]="24" customClass="text-botanical" />
+      </div>
+      <div class="support-text">
+        <strong>¿Tienes alguna inquietud médica o duda sobre tu zona de dolor?</strong>
+        <span>Escríbeme por WhatsApp y con gusto resolveré todas tus preguntas antes de agendar.</span>
+      </div>
+      <a 
+        [href]="getWhatsAppBookingUrl()" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="btn-whatsapp"
+      >
+        <app-icon name="whatsapp" [size]="18" />
+        <span>Preguntar por WhatsApp</span>
+      </a>
+    </div>
+  </div>
+</section>

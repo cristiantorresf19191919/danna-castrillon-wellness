@@ -1,0 +1,78 @@
+<section class="benefits-section section-padding" aria-label="Por qué elegir a Danna Castrillón">
+  <div class="container-custom">
+    <div class="benefits-grid">
+      <!-- Left Column: Editorial Headline & 3 Key Benefits -->
+      <div class="benefits-text-col">
+        <span class="eyebrow">
+          <app-icon name="leaf" [size]="16" customClass="text-botanical" />
+          PROPÓSITO & FILOSOFÍA
+        </span>
+
+        <h2 class="editorial-manifesto">
+          <span>Menos tensión.</span>
+          <span>Más movimiento.</span>
+          <span class="highlight-organic">Más bienestar.</span>
+        </h2>
+
+        <p class="manifesto-lead">
+          La terapia física y el masaje no son un lujo ocasional, sino el mantenimiento consciente que tu cuerpo requiere para responder con energía, agilidad y sin dolor a las exigencias diarias.
+        </p>
+
+        <!-- 3 Large Benefits -->
+        <div class="benefits-list-flow">
+          @for (benefit of benefits(); track benefit.number) {
+            <div class="benefit-item">
+              <span class="benefit-num">{{ benefit.number }}</span>
+              <div class="benefit-content">
+                <h3 class="benefit-heading">{{ benefit.title }}</h3>
+                <p class="benefit-desc">{{ benefit.detail }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Right Column: Authentic Portrait of Danna with Overlapping Quote Card -->
+      <div class="benefits-visual-col">
+        <div class="portrait-container">
+          <!-- Background botanical shape -->
+          <div class="portrait-shadow-shape" aria-hidden="true"></div>
+
+          <!-- Danna Portrait -->
+          <div class="portrait-image-wrapper">
+            <img 
+              src="assets/images/danna-portrait.jpg" 
+              alt="Danna Castrillón - Terapeuta física profesional en Bogotá" 
+              class="danna-benefit-portrait"
+              width="540" 
+              height="680"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
+          <!-- Overlapping Quote Badge -->
+          <div class="overlapping-quote-card glass-card">
+            <div class="quote-mark">“</div>
+            <blockquote class="quote-text">
+              Cuidar de tu cuerpo también es una forma de avanzar.
+            </blockquote>
+            <div class="quote-author-row">
+              <span class="author-name">Danna Castrillón</span>
+              <span class="author-title">Terapeuta física & Masajista</span>
+            </div>
+          </div>
+
+          <!-- Experience Pill -->
+          <div class="experience-badge glass-card">
+            <app-icon name="sparkles" [size]="18" customClass="text-gold" />
+            <div class="exp-text">
+              <strong>Atención de excelencia</strong>
+              <span>Enfoque clínico & relajación profunda</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

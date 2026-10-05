@@ -1,0 +1,104 @@
+<section id="servicios" class="services-section section-padding" aria-labelledby="services-title">
+  <div class="container-custom">
+    <!-- Header -->
+    <div class="section-header-centered">
+      <span class="eyebrow">
+        <app-icon name="sparkles" [size]="16" customClass="text-botanical" />
+        NUESTROS SERVICIOS TERAPÉUTICOS
+      </span>
+      <h2 id="services-title" class="headline-section">
+        Tu bienestar en buenas manos
+      </h2>
+      <p class="subtitle-section mx-auto">
+        Tratamientos pensados para ayudarte a sentirte, moverte y vivir mejor. Cada sesión combina criterio profesional, cuidado humano y técnicas manuales personalizadas.
+      </p>
+    </div>
+
+    <!-- Editorial Alternating Layout Grid -->
+    <div class="services-editorial-grid">
+      @for (service of services(); track service.id; let i = $index) {
+        <article 
+          class="service-card" 
+          [class.card-featured]="service.id === 'terapia-fisica'"
+          [class.card-alternate]="i % 2 !== 0"
+        >
+          <div class="card-inner">
+            <!-- Top Badges & Meta -->
+            <div class="card-meta">
+              <span class="service-tag">{{ service.tag }}</span>
+              <div class="service-duration">
+                <app-icon name="clock" [size]="14" customClass="text-botanical" />
+                <span>{{ service.duration }}</span>
+              </div>
+            </div>
+
+            <!-- Header info -->
+            <div class="card-title-group">
+              <div class="card-icon-wrapper">
+                <app-icon [name]="service.icon" [size]="24" customClass="text-botanical" />
+              </div>
+              <div>
+                <span class="service-number">{{ service.number }}</span>
+                <h3 class="service-title">{{ service.title }}</h3>
+                <p class="service-subtitle">{{ service.subtitle }}</p>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="service-desc">
+              {{ service.description }}
+            </p>
+
+            <!-- Key Benefits Checklist -->
+            <div class="service-benefits">
+              <span class="benefits-label">Beneficios clave:</span>
+              <ul class="benefits-list">
+                @for (benefit of service.benefits; track benefit) {
+                  <li>
+                    <app-icon name="check" [size]="14" customClass="text-botanical" />
+                    <span>{{ benefit }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <!-- Ideal For Recommendation -->
+            <div class="service-ideal">
+              <strong>Ideal para:</strong> {{ service.idealFor }}
+            </div>
+
+            <!-- Card Bottom CTA Action -->
+            <div class="card-action">
+              <a 
+                [href]="getWhatsAppBookingUrl(service)" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="service-book-btn"
+                [attr.aria-label]="'Agendar ' + service.title + ' por WhatsApp'"
+              >
+                <span>Agendar esta terapia</span>
+                <div class="arrow-circle">
+                  <app-icon name="arrow-right" [size]="16" />
+                </div>
+              </a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    <!-- Bottom note & Domicilio reassurance -->
+    <div class="services-footer-banner glass-card">
+      <div class="banner-icon">
+        <app-icon name="home" [size]="24" customClass="text-botanical" />
+      </div>
+      <div class="banner-text">
+        <strong>¿Prefieres la sesión en tu hogar?</strong>
+        <span>Todos nuestros servicios están disponibles para atención a domicilio en Bogotá con camilla profesional incluida.</span>
+      </div>
+      <a href="#a-domicilio" class="btn-secondary banner-cta">
+        <span>Conocer servicio a domicilio</span>
+      </a>
+    </div>
+  </div>
+</section>

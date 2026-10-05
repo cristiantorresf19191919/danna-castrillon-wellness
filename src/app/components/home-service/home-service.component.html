@@ -1,0 +1,110 @@
+<section id="a-domicilio" class="home-service-section section-padding" aria-labelledby="home-service-title">
+  <div class="container-custom">
+    <div class="home-service-grid">
+      <!-- Left Column: Copy, Features & Coverage -->
+      <div class="home-text-col">
+        <span class="eyebrow">
+          <app-icon name="home" [size]="16" customClass="text-botanical" />
+          ATENCIÓN A DOMICILIO EN BOGOTÁ
+        </span>
+
+        <h2 id="home-service-title" class="headline-section home-headline">
+          Bienestar sin salir de casa.
+        </h2>
+
+        <p class="home-lead-text">
+          También puedes recibir tu sesión en la comodidad de tu hogar. Atención a domicilio disponible en Bogotá para que tu momento de relajación comience sin prisas y termine en el descanso total de tu propia casa.
+        </p>
+
+        <!-- Feature List -->
+        <div class="features-checklist">
+          @for (item of homeFeatures; track item.title) {
+            <div class="feature-item">
+              <div class="feature-check">
+                <app-icon name="check" [size]="16" customClass="text-botanical" />
+              </div>
+              <div class="feature-content">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.desc }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Coverage Pill Chips -->
+        <div class="coverage-box">
+          <span class="coverage-label">
+            <app-icon name="map-pin" [size]="14" customClass="text-botanical" />
+            Zonas principales de cobertura:
+          </span>
+          <div class="zones-tags-list">
+            @for (zone of coverageZones; track zone) {
+              <span class="zone-badge">{{ zone }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="cta-row">
+          <a 
+            [href]="getWhatsAppBookingUrl()" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn-whatsapp"
+          >
+            <app-icon name="whatsapp" [size]="20" />
+            <span>Consultar disponibilidad</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Visual with Bogotá Cerros Reference & Atmosphere Card -->
+      <div class="home-visual-col">
+        <div class="bogota-artistic-card">
+          <!-- Artistic Bogotá Mountains Vector Layer -->
+          <div class="cerros-artwork" aria-hidden="true">
+            <svg viewBox="0 0 500 240" fill="none" class="cerros-svg" xmlns="http://www.w3.org/2000/svg">
+              <!-- Distant hills -->
+              <path d="M0 160 Q120 70 240 120 T500 90 L500 240 L0 240 Z" fill="#D9E4D5" fill-opacity="0.45" />
+              <!-- Mid hills with Monserrate profile -->
+              <path d="M0 180 Q80 130 180 150 Q280 80 390 140 Q450 110 500 135 L500 240 L0 240 Z" fill="#AFC4A8" fill-opacity="0.5" />
+              <!-- Forefront hills & Parkway trees contour -->
+              <path d="M0 200 Q90 165 210 185 Q320 155 420 190 Q470 170 500 185 L500 240 L0 240 Z" fill="#1E5C46" fill-opacity="0.25" />
+            </svg>
+          </div>
+
+          <!-- Studio Sanctuary Overlay Card -->
+          <div class="domicilio-atmosphere-card glass-card">
+            <div class="card-ambient-icon">
+              <app-icon name="sparkles" [size]="28" customClass="text-gold" />
+            </div>
+            
+            <h3 class="atmosphere-title">
+              Tu espacio transformado en un santuario
+            </h3>
+
+            <p class="atmosphere-desc">
+              Danna se encarga de todo el montaje en menos de 10 minutos: camilla reclinable, sábanas esterilizadas, aceites hipoalergénicos de almendras y eucalipto, y música para inducir relajación profunda del sistema nervioso.
+            </p>
+
+            <div class="atmosphere-stats">
+              <div class="stat-bubble">
+                <strong>100%</strong>
+                <span>Puntualidad</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-bubble">
+                <strong>0</strong>
+                <span>Desplazamientos</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-bubble">
+                <strong>Máximo</strong>
+                <span>Confort en tu hogar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,87 @@
+<section id="sobre-mi" class="about-section section-padding" aria-labelledby="about-title">
+  <div class="container-custom">
+    <div class="about-grid">
+      <!-- Left Column: Authentic Studio Image with Frame & Badges -->
+      <div class="about-media-col">
+        <div class="about-media-wrapper">
+          <div class="media-backdrop-shape" aria-hidden="true"></div>
+          
+          <div class="media-frame">
+            <img 
+              src="assets/images/danna-studio.jpg" 
+              alt="Danna Castrillón en su espacio terapéutico en Teusaquillo, Bogotá" 
+              class="about-studio-img"
+              width="580" 
+              height="480"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="media-badge glass-card">
+              <span class="badge-dot"></span>
+              <span class="badge-text">Espacio terapéutico · La Soledad, Park Way</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Personal Story & Credentials -->
+      <div class="about-content-col">
+        <span class="eyebrow">
+          <app-icon name="heart-handshake" [size]="16" customClass="text-botanical" />
+          CONOCE A TU TERAPEUTA
+        </span>
+
+        <h2 id="about-title" class="headline-section about-title">
+          Hola, soy Danna.
+        </h2>
+
+        <div class="about-narrative">
+          <p class="narrative-highlight">
+            Soy terapeuta enfocada en ayudarte a cuidar tu cuerpo, reducir tensiones y recuperar tu bienestar a través de terapias físicas y atención personalizada.
+          </p>
+
+          <p class="narrative-body">
+            Creo firmemente que sentirte bien físicamente también transforma la manera en que enfrentas tu día. La rigidez en el cuello, el dolor lumbar por horas en la computadora o el cansancio acumulado no tienen por qué ser tu estado normal.
+          </p>
+
+          <p class="narrative-body">
+            En cada sesión, ya sea en mi consultorio a pasos del Park Way o en la tranquilidad de tu hogar en Bogotá, encontrarás un espacio seguro, silencioso y profesional donde tu recuperación es la única prioridad.
+          </p>
+        </div>
+
+        <!-- Credentials grid -->
+        <div class="credentials-grid">
+          @for (item of credentials; track item.title) {
+            <div class="credential-item">
+              <div class="cred-icon">
+                <app-icon name="check-circle" [size]="18" customClass="text-botanical" />
+              </div>
+              <div class="cred-info">
+                <strong>{{ item.title }}</strong>
+                <span>{{ item.desc }}</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Signature and Call to Action -->
+        <div class="about-footer-row">
+          <div class="signature-block">
+            <span class="signature-font">Danna Castrillón</span>
+            <span class="signature-role">Terapeuta Física & Bienestar</span>
+          </div>
+
+          <a 
+            [href]="getWhatsAppBookingUrl()" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn-whatsapp about-cta"
+          >
+            <app-icon name="whatsapp" [size]="20" />
+            <span>Hablar con Danna</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

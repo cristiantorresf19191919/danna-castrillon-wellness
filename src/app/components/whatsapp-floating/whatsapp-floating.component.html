@@ -1,0 +1,42 @@
+<!-- Desktop Floating Button (Bottom-Right) -->
+<aside class="desktop-floating-wrapper" aria-label="Contacto directo por WhatsApp">
+  <a 
+    [href]="getWhatsAppUrl()" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    class="desktop-wa-btn"
+    aria-label="Escribir por WhatsApp a Danna Castrillón (+57 314 2529565)"
+  >
+    <span class="wa-tooltip">
+      <span class="tooltip-title">¿Tienes preguntas o deseas agendar?</span>
+      <span class="tooltip-sub">Escríbeme directamente a WhatsApp</span>
+    </span>
+
+    <div class="wa-icon-sphere">
+      <app-icon name="whatsapp" [size]="28" />
+    </div>
+
+    <span class="wa-pulse-ring" aria-hidden="true"></span>
+  </a>
+</aside>
+
+<!-- Mobile Sticky Bottom Bar -->
+<div class="mobile-sticky-bar" role="region" aria-label="Barra fija de agendamiento móvil">
+  <div class="sticky-inner">
+    <div class="sticky-info">
+      <strong class="sticky-name">Danna Castrillón</strong>
+      <span class="sticky-loc">La Soledad · Domicilios Bogotá</span>
+    </div>
+
+    <a 
+      [href]="getWhatsAppUrl()" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      class="btn-whatsapp mobile-sticky-cta"
+      aria-label="Agendar por WhatsApp"
+    >
+      <app-icon name="whatsapp" [size]="20" />
+      <span>Agendar por WhatsApp</span>
+    </a>
+  </div>
+</div>

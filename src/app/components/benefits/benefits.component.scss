@@ -1,0 +1,229 @@
+.benefits-section {
+  background-color: var(--color-ivory);
+  position: relative;
+  overflow: hidden;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  align-items: center;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 4.5rem;
+  }
+}
+
+.benefits-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.editorial-manifesto {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+  font-weight: 600;
+  color: var(--color-forest);
+  line-height: 1.12;
+  display: flex;
+  flex-direction: column;
+  letter-spacing: -0.015em;
+}
+
+.manifesto-lead {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--color-charcoal-muted);
+  max-width: 540px;
+}
+
+/* 3 Large Benefits Flow */
+.benefits-list-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid rgba(18, 60, 50, 0.1);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.benefit-num {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-botanical);
+  line-height: 1;
+  opacity: 0.85;
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.benefit-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  .benefit-heading {
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--color-forest);
+    line-height: 1.25;
+  }
+
+  .benefit-desc {
+    font-size: 0.92rem;
+    color: var(--color-charcoal-muted);
+    line-height: 1.55;
+  }
+}
+
+/* Visual Column */
+.benefits-visual-col {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.portrait-container {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+}
+
+.portrait-shadow-shape {
+  position: absolute;
+  inset: -12px;
+  background: rgba(175, 196, 168, 0.35);
+  border-radius: var(--radius-xl);
+  z-index: 1;
+  transform: rotate(2deg);
+}
+
+.portrait-image-wrapper {
+  position: relative;
+  z-index: 2;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-floating);
+  background-color: var(--color-sand);
+  aspect-ratio: 3 / 4;
+
+  .danna-benefit-portrait {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    transition: transform 0.5s ease;
+  }
+
+  &:hover .danna-benefit-portrait {
+    transform: scale(1.03);
+  }
+}
+
+/* Overlapping Quote Card */
+.overlapping-quote-card {
+  position: absolute;
+  bottom: -25px;
+  left: -20px;
+  right: 20px;
+  z-index: 3;
+  padding: 1.5rem 1.75rem;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(232, 221, 205, 0.95);
+  box-shadow: 0 16px 36px rgba(18, 60, 50, 0.12);
+
+  @media (max-width: 576px) {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  .quote-mark {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    line-height: 0.6;
+    color: var(--color-sage);
+    margin-bottom: 0.35rem;
+  }
+
+  .quote-text {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--color-forest);
+    line-height: 1.35;
+    margin-bottom: 0.85rem;
+  }
+
+  .quote-author-row {
+    display: flex;
+    flex-direction: column;
+
+    .author-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-forest);
+    }
+
+    .author-title {
+      font-size: 0.76rem;
+      color: var(--color-charcoal-muted);
+    }
+  }
+}
+
+.experience-badge {
+  position: absolute;
+  top: 20px;
+  right: -15px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.15rem;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 10px 25px rgba(18, 60, 50, 0.08);
+
+  @media (max-width: 576px) {
+    right: 5px;
+    top: 10px;
+    padding: 0.6rem 0.9rem;
+  }
+
+  .exp-text {
+    display: flex;
+    flex-direction: column;
+
+    strong {
+      font-size: 0.8rem;
+      color: var(--color-forest);
+      white-space: nowrap;
+    }
+
+    span {
+      font-size: 0.72rem;
+      color: var(--color-charcoal-muted);
+      white-space: nowrap;
+    }
+  }
+}

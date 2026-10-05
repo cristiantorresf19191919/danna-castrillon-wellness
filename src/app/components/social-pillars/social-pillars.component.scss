@@ -1,0 +1,161 @@
+.social-section {
+  background-color: var(--color-ivory);
+  position: relative;
+}
+
+.social-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.social-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(18, 60, 50, 0.04);
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 36px rgba(18, 60, 50, 0.1);
+
+    .card-video-canvas {
+      border-color: var(--color-sage);
+    }
+  }
+}
+
+.card-video-canvas {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(232, 221, 205, 0.9);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.75rem;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.canvas-decor-aura {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(175, 196, 168, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.canvas-badge-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+
+  .pill-category {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-botanical);
+  }
+
+  .pill-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-charcoal-muted);
+    background-color: var(--color-ivory);
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-pill);
+  }
+}
+
+.canvas-inner-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  .post-title {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--color-forest);
+    line-height: 1.25;
+  }
+
+  .post-summary {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-charcoal-muted);
+  }
+}
+
+.canvas-advice-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0.95rem;
+  background-color: var(--color-warm-white);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(232, 221, 205, 0.7);
+
+  .advice-icon {
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .advice-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-forest);
+    line-height: 1.4;
+  }
+}
+
+.instagram-invite-row {
+  margin-top: 3.5rem;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  border: 1px solid rgba(232, 221, 205, 0.9);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+
+  .invite-content {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+
+    .invite-text {
+      font-size: 0.94rem;
+      font-weight: 500;
+      color: var(--color-forest);
+    }
+  }
+
+  .invite-btn {
+    padding: 0.65rem 1.35rem;
+    font-size: 0.86rem;
+  }
+}

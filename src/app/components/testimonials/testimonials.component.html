@@ -1,0 +1,90 @@
+<section class="testimonials-section section-padding" aria-labelledby="testimonials-title">
+  <div class="container-custom">
+    <!-- Header with Nav Controls -->
+    <div class="testimonials-header-row">
+      <div>
+        <span class="eyebrow">
+          <app-icon name="star" [size]="16" customClass="text-gold" />
+          EXPERIENCIAS REALES
+        </span>
+        <h2 id="testimonials-title" class="headline-section">
+          Voces de descanso y bienestar
+        </h2>
+      </div>
+
+      <!-- Controls -->
+      <div class="carousel-nav-controls">
+        <button 
+          type="button" 
+          class="carousel-btn prev-btn" 
+          (click)="prev()" 
+          aria-label="Testimonio anterior"
+        >
+          <app-icon name="arrow-right" [size]="18" customClass="rotate-180" />
+        </button>
+        <button 
+          type="button" 
+          class="carousel-btn next-btn" 
+          (click)="next()" 
+          aria-label="Testimonio siguiente"
+        >
+          <app-icon name="arrow-right" [size]="18" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Testimonials Display -->
+    <div class="testimonials-slider-track">
+      @for (item of testimonials(); track item.id; let i = $index) {
+        <div 
+          class="testimonial-card glass-card"
+          [class.active]="currentIndex() === i"
+        >
+          <!-- Stars rating -->
+          <div class="card-stars-row">
+            <div class="stars">
+              @for (_ of [1, 2, 3, 4, 5]; track $index) {
+                <app-icon name="star" [size]="15" customClass="text-gold" />
+              }
+            </div>
+            <span class="service-taken-tag">{{ item.service }}</span>
+          </div>
+
+          <!-- Highlight -->
+          <span class="testimonial-highlight">
+            "{{ item.highlight }}"
+          </span>
+
+          <!-- Quote -->
+          <blockquote class="testimonial-quote">
+            {{ item.quote }}
+          </blockquote>
+
+          <!-- Author details -->
+          <div class="testimonial-author">
+            <div class="author-avatar-initial">
+              {{ item.name.charAt(0) }}
+            </div>
+            <div class="author-info">
+              <strong class="author-name">{{ item.name }}</strong>
+              <span class="author-meta">{{ item.roleOrLocation }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Pagination Dots -->
+    <div class="pagination-dots-row">
+      @for (item of testimonials(); track item.id; let i = $index) {
+        <button 
+          type="button" 
+          class="dot-indicator-btn" 
+          [class.active]="currentIndex() === i"
+          (click)="goTo(i)"
+          [attr.aria-label]="'Ir al testimonio ' + (i + 1)"
+        ></button>
+      }
+    </div>
+  </div>
+</section>

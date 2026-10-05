@@ -1,0 +1,225 @@
+.home-service-section {
+  background-color: var(--color-warm-white);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-service-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  align-items: center;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 4.5rem;
+  }
+}
+
+.home-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.home-headline {
+  margin-top: -0.25rem;
+}
+
+.home-lead-text {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--color-charcoal-muted);
+  max-width: 540px;
+}
+
+.features-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  margin-top: 0.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+
+  .feature-check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--color-ivory);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .feature-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    strong {
+      font-size: 0.95rem;
+      color: var(--color-forest);
+    }
+
+    p {
+      font-size: 0.88rem;
+      color: var(--color-charcoal-muted);
+      line-height: 1.5;
+    }
+  }
+}
+
+.coverage-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background-color: var(--color-ivory);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(232, 221, 205, 0.8);
+
+  .coverage-label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-forest);
+  }
+
+  .zones-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .zone-badge {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--color-botanical);
+      background-color: #ffffff;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(175, 196, 168, 0.5);
+    }
+  }
+}
+
+.cta-row {
+  padding-top: 0.5rem;
+}
+
+/* Visual Column */
+.home-visual-col {
+  display: flex;
+  justify-content: center;
+}
+
+.bogota-artistic-card {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(180deg, var(--color-ivory) 0%, rgba(247, 242, 232, 0.4) 100%);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid rgba(232, 221, 205, 0.9);
+  box-shadow: var(--shadow-floating);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.cerros-artwork {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 240px;
+  pointer-events: none;
+  z-index: 1;
+
+  .cerros-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.domicilio-atmosphere-card {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(232, 221, 205, 0.95);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+
+  .card-ambient-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--color-ivory);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .atmosphere-title {
+    font-family: var(--font-serif);
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--color-forest);
+    line-height: 1.25;
+  }
+
+  .atmosphere-desc {
+    font-size: 0.9rem;
+    color: var(--color-charcoal-muted);
+    line-height: 1.6;
+  }
+
+  .atmosphere-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(232, 221, 205, 0.7);
+
+    .stat-bubble {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+
+      strong {
+        font-family: var(--font-serif);
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--color-botanical);
+        line-height: 1;
+      }
+
+      span {
+        font-size: 0.72rem;
+        color: var(--color-charcoal-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 28px;
+      background-color: var(--color-sand);
+    }
+  }
+}

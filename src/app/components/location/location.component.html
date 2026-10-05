@@ -1,0 +1,92 @@
+<section id="ubicacion" class="location-section section-padding" aria-labelledby="location-title">
+  <div class="container-custom">
+    <!-- Header -->
+    <div class="section-header-centered">
+      <span class="eyebrow">
+        <app-icon name="map-pin" [size]="16" customClass="text-botanical" />
+        ESPACIO PRIVADO EN BOGOTÁ
+      </span>
+      <h2 id="location-title" class="headline-section">
+        También puedes visitarnos
+      </h2>
+      <p class="subtitle-section mx-auto">
+        Un ambiente sereno, seguro y libre de ruido en uno de los barrios más verdes y tradicionales de Bogotá.
+      </p>
+    </div>
+
+    <!-- Map & Location Card Container -->
+    <div class="location-map-wrapper">
+      <!-- Interactive Map Frame -->
+      <div class="map-frame">
+        <iframe 
+          title="Ubicación consultorio La Soledad Park Way Bogotá"
+          class="map-iframe"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-74.0845%2C4.6240%2C-74.0720%2C4.6345&amp;layer=mapnik&amp;marker=4.6293%2C-74.0782"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+        <div class="map-overlay-tint"></div>
+      </div>
+
+      <!-- Premium Card Overlapping Map -->
+      <div class="location-floating-card glass-card">
+        <div class="loc-card-header">
+          <div class="loc-badge">
+            <span class="pulse-green"></span>
+            <span>Atención exclusiva con cita previa</span>
+          </div>
+          <h3 class="loc-title">La Soledad · Teusaquillo</h3>
+          <p class="loc-subtitle">A una cuadra del Park Way · Bogotá</p>
+        </div>
+
+        <div class="loc-details-list">
+          <div class="loc-detail-row">
+            <app-icon name="map-pin" [size]="18" customClass="text-botanical" />
+            <div class="row-content">
+              <strong>Dirección & Entorno</strong>
+              <span>Barrio La Soledad (sector Park Way), Teusaquillo. Calle arbolada y tranquila.</span>
+            </div>
+          </div>
+
+          <div class="loc-detail-row">
+            <app-icon name="clock" [size]="18" customClass="text-botanical" />
+            <div class="row-content">
+              <strong>Horarios de atención</strong>
+              <span>Lunes a Sábado: 8:00 AM – 7:00 PM</span>
+            </div>
+          </div>
+
+          <div class="loc-detail-row">
+            <app-icon name="shield-check" [size]="18" customClass="text-botanical" />
+            <div class="row-content">
+              <strong>Acceso y movilidad</strong>
+              <span>Cerca a ciclorruta Park Way, TransMilenio estación Av. 39 y zonas de parqueo sobre el boulevard.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="loc-card-actions">
+          <a 
+            [href]="getWhatsAppBookingUrl()" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn-whatsapp w-full"
+          >
+            <app-icon name="whatsapp" [size]="20" />
+            <span>Agendar en consultorio</span>
+          </a>
+
+          <a 
+            [href]="mapsDirectionsUrl" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn-secondary w-full text-center"
+          >
+            <app-icon name="compass" [size]="18" />
+            <span>Abrir en Google Maps</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

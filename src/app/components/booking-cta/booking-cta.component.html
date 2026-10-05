@@ -1,0 +1,128 @@
+<section id="reservar" class="booking-section section-padding" aria-labelledby="booking-title">
+  <!-- Ambient Botanical Glows -->
+  <div class="booking-aura aura-left" aria-hidden="true"></div>
+  <div class="booking-aura aura-right" aria-hidden="true"></div>
+
+  <div class="container-custom">
+    <!-- Main Cinematic Booking Card -->
+    <div class="booking-master-card">
+      <div class="booking-grid">
+        <!-- Left Column: Emotional Editorial Story & Conversion Form -->
+        <div class="booking-content-col">
+          <div class="booking-eyebrow">
+            <span class="eyebrow-light">
+              <span class="pulse-indicator"></span>
+              RESERVA DIRECTA POR WHATSAPP
+            </span>
+          </div>
+
+          <h2 id="booking-title" class="booking-headline">
+            <span class="headline-part-1">Tu cuerpo ya hizo suficiente por hoy.</span>
+            <span class="headline-part-2">Ahora te toca cuidarlo.</span>
+          </h2>
+
+          <p class="booking-lead">
+            Sentirte mejor puede empezar hoy. Regálale a tu cuerpo el cuidado que necesita con atención cálida, segura y personalizada de Danna Castrillón.
+          </p>
+
+          <!-- Interactive Quick Appointment Selector -->
+          <div class="booking-planner-box">
+            <!-- 1. Service Choice -->
+            <div class="planner-field">
+              <label class="planner-label">
+                <app-icon name="sparkles" [size]="15" customClass="text-sage" />
+                1. Elige el tratamiento:
+              </label>
+              <div class="options-pills-row">
+                @for (opt of serviceOptions; track opt) {
+                  <button 
+                    type="button" 
+                    class="opt-pill" 
+                    [class.active]="selectedService() === opt"
+                    (click)="selectService(opt)"
+                  >
+                    {{ opt }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- 2. Location Choice -->
+            <div class="planner-field">
+              <label class="planner-label">
+                <app-icon name="map-pin" [size]="15" customClass="text-sage" />
+                2. ¿Dónde prefieres tu sesión?
+              </label>
+              <div class="options-pills-row">
+                @for (loc of locationOptions; track loc) {
+                  <button 
+                    type="button" 
+                    class="opt-pill" 
+                    [class.active]="selectedLocation() === loc"
+                    (click)="selectLocation(loc)"
+                  >
+                    {{ loc }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- WhatsApp Primary CTA Trigger -->
+            <div class="planner-action-group">
+              <a 
+                [href]="generateCustomWhatsAppUrl()" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="btn-whatsapp-booking"
+                aria-label="Agendar cita por WhatsApp con Danna Castrillón"
+              >
+                <div class="whatsapp-icon-pulse">
+                  <app-icon name="whatsapp" [size]="24" />
+                </div>
+                <div class="whatsapp-cta-text">
+                  <span class="cta-primary-title">Agenda tu cita por WhatsApp</span>
+                  <span class="cta-phone-number">{{ phone }}</span>
+                </div>
+                <app-icon name="arrow-right" [size]="20" customClass="cta-arrow" />
+              </a>
+
+              <div class="booking-reassurance-row">
+                <div class="reassurance-item">
+                  <app-icon name="check-circle" [size]="15" customClass="text-sage" />
+                  <span>Respuesta rápida y directa de Danna</span>
+                </div>
+                <div class="reassurance-item">
+                  <app-icon name="shield-check" [size]="15" customClass="text-sage" />
+                  <span>Sin pagos por adelantado</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Authentic Cinematic Portrait of Danna -->
+        <div class="booking-visual-col">
+          <div class="cinematic-portrait-frame">
+            <img 
+              src="assets/images/danna-hero.jpg" 
+              alt="Danna Castrillón - Terapeuta física profesional lista para atenderte" 
+              class="cinematic-img"
+              width="540" 
+              height="640"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="cinematic-gradient-overlay"></div>
+
+            <div class="cinematic-quote-badge glass-card">
+              <span class="badge-quote-line">
+                "Será un placer acompañarte a recuperar tu equilibrio."
+              </span>
+              <span class="badge-signature">Danna Castrillón</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

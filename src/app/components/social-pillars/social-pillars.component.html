@@ -1,0 +1,67 @@
+<section class="social-section section-padding" aria-labelledby="social-title">
+  <div class="container-custom">
+    <!-- Header -->
+    <div class="section-header-centered">
+      <span class="eyebrow">
+        <app-icon name="instagram" [size]="16" customClass="text-botanical" />
+        EDUCACIÓN & HÁBITOS SALUDABLES
+      </span>
+      <h2 id="social-title" class="headline-section">
+        Consejos para sentirte mejor cada día
+      </h2>
+      <p class="subtitle-section mx-auto">
+        Pequeñas acciones diarias de biomecánica, respiración y ergonomía que transforman tu relación con tu cuerpo.
+      </p>
+    </div>
+
+    <!-- Editorial Reels / Content Cards Grid -->
+    <div class="social-cards-grid">
+      @for (post of posts(); track post.id) {
+        <article class="social-card">
+          <div class="card-video-canvas">
+            <!-- Ambient botanical backdrop pattern -->
+            <div class="canvas-decor-aura" aria-hidden="true"></div>
+
+            <div class="canvas-badge-top">
+              <span class="pill-category">{{ post.category }}</span>
+              <span class="pill-badge">{{ post.badge }}</span>
+            </div>
+
+            <!-- Content within card -->
+            <div class="canvas-inner-content">
+              <h3 class="post-title">{{ post.title }}</h3>
+              <p class="post-summary">{{ post.summary }}</p>
+            </div>
+
+            <!-- Bottom advice highlight -->
+            <div class="canvas-advice-bar">
+              <div class="advice-icon">
+                <app-icon name="sparkles" [size]="15" customClass="text-botanical" />
+              </div>
+              <span class="advice-text">{{ post.keyAdvice }}</span>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    <!-- Follow on Instagram link banner -->
+    <div class="instagram-invite-row">
+      <div class="invite-content">
+        <app-icon name="instagram" [size]="22" customClass="text-forest" />
+        <span class="invite-text">
+          Encuentra más pautas de movilidad, posturas de teletrabajo y contenido de bienestar en Instagram
+        </span>
+      </div>
+      <a 
+        [href]="instagramUrl" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="btn-secondary invite-btn"
+      >
+        <span>{{ instagramHandle }}</span>
+        <app-icon name="arrow-right" [size]="16" />
+      </a>
+    </div>
+  </div>
+</section>

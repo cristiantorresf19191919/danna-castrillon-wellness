@@ -1,0 +1,64 @@
+<section id="experiencia" class="process-section section-padding" aria-labelledby="process-title">
+  <div class="container-custom">
+    <!-- Header -->
+    <div class="section-header-centered">
+      <span class="eyebrow">
+        <app-icon name="compass" [size]="16" customClass="text-botanical" />
+        METODOLOGÍA DE CUIDADO
+      </span>
+      <h2 id="process-title" class="headline-section">
+        Tu sesión, paso a paso
+      </h2>
+      <p class="subtitle-section mx-auto">
+        Desde el primer minuto diseñamos una experiencia transparente, reconfortante y sin prisas. Así transcurre tu cita con Danna.
+      </p>
+    </div>
+
+    <!-- Timeline Container -->
+    <div class="timeline-container">
+      <!-- Continuous center vertical line for desktop -->
+      <div class="timeline-line-track" aria-hidden="true">
+        <div class="timeline-progress-bar"></div>
+      </div>
+
+      <!-- Steps sequence -->
+      <div class="timeline-steps-flow">
+        @for (step of steps(); track step.number; let i = $index) {
+          <div 
+            class="timeline-step-row" 
+            [class.row-inverted]="i % 2 !== 0"
+          >
+            <!-- Step marker in center -->
+            <div class="timeline-marker-wrapper">
+              <div class="step-badge-node">
+                <span class="node-number">{{ step.number }}</span>
+              </div>
+            </div>
+
+            <!-- Content card -->
+            <div class="timeline-step-card glass-card">
+              <div class="card-step-header">
+                <div class="step-icon-box">
+                  <app-icon [name]="step.icon" [size]="20" customClass="text-botanical" />
+                </div>
+                <div class="step-title-meta">
+                  <span class="step-subtitle">{{ step.subtitle }}</span>
+                  <h3 class="step-title">{{ step.title }}</h3>
+                </div>
+              </div>
+
+              <p class="step-desc">
+                {{ step.description }}
+              </p>
+
+              <div class="step-detail-box">
+                <app-icon name="check" [size]="14" customClass="text-sage" />
+                <span>{{ step.detail }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
