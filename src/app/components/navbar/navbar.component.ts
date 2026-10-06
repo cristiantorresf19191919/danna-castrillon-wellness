@@ -2,6 +2,7 @@ import { Component, HostListener, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { WellnessService } from '../../core/services/wellness.service';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,6 +13,7 @@ import { WellnessService } from '../../core/services/wellness.service';
 })
 export class NavbarComponent {
   private readonly wellnessService = inject(WellnessService);
+  readonly themeService = inject(ThemeService);
 
   readonly isScrolled = signal(false);
   readonly isMobileMenuOpen = signal(false);
@@ -30,6 +32,10 @@ export class NavbarComponent {
   onWindowScroll(): void {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isScrolled.set(scrollY > 50);
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 
   toggleMobileMenu(): void {

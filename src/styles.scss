@@ -1,10 +1,11 @@
 /* ==========================================================================
    DANNA CASTRILLÓN — WELLNESS & PHYSICAL THERAPY DESIGN SYSTEM
    Editorial Wellness Aesthetic · Bogotá, Colombia
+   Supports Light (Day Serene) and Dark (Nocturnal Spa) themes
    ========================================================================== */
 
 :root {
-  /* Color Palette */
+  /* Color Palette - Light Mode (Default Boutique Wellness) */
   --color-forest: #123C32;
   --color-botanical: #1E5C46;
   --color-sage: #AFC4A8;
@@ -18,6 +19,16 @@
   --color-gold-light: #F1E7D8;
   --color-whatsapp: #25D366;
   --color-whatsapp-dark: #128C7E;
+
+  /* Semantic UI Surfaces & Borders */
+  --bg-primary: #FCFAF6;
+  --bg-surface: #FFFFFF;
+  --bg-surface-subtle: #F7F2E8;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --border-subtle: rgba(232, 221, 205, 0.85);
+  --border-card: rgba(232, 221, 205, 0.8);
+  --nav-pill-bg: rgba(247, 242, 232, 0.88);
+  --nav-pill-border: rgba(232, 221, 205, 0.9);
 
   /* Typography */
   --font-serif: 'Cormorant Garamond', Garamond, Georgia, serif;
@@ -42,6 +53,38 @@
   --radius-organic: 60% 40% 50% 50% / 50% 50% 50% 50%;
 }
 
+/* ==========================================================================
+   DARK THEME (Nocturnal Luxury Spa & Deep Botanical Sanctuary)
+   ========================================================================== */
+html.dark {
+  --color-forest: #F4EFE6;
+  --color-botanical: #66C2A5;
+  --color-sage: #AFC4A8;
+  --color-sage-light: #16362E;
+  --color-ivory: #132D26;
+  --color-sand: #1A3D33;
+  --color-warm-white: #0B1915;
+  --color-charcoal: #F5EFEB;
+  --color-charcoal-muted: #A1B5AE;
+  --color-gold: #DFBD88;
+  --color-gold-light: #24443A;
+
+  /* Surfaces & Borders */
+  --bg-primary: #0B1915;
+  --bg-surface: #102620;
+  --bg-surface-subtle: #14322A;
+  --bg-card: rgba(16, 38, 32, 0.94);
+  --border-subtle: rgba(175, 196, 168, 0.18);
+  --border-card: rgba(175, 196, 168, 0.22);
+  --nav-pill-bg: rgba(14, 34, 28, 0.92);
+  --nav-pill-border: rgba(175, 196, 168, 0.28);
+
+  /* Shadows */
+  --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 12px 36px -4px rgba(0, 0, 0, 0.45);
+  --shadow-floating: 0 20px 48px -6px rgba(0, 0, 0, 0.55);
+}
+
 /* Reset & Box Sizing */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -58,6 +101,7 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 body {
@@ -65,6 +109,7 @@ body {
   overflow-x: hidden;
   background-color: var(--color-warm-white);
   color: var(--color-charcoal);
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 img, picture, svg, video {
@@ -150,18 +195,18 @@ a {
 
 /* Glassmorphism & Modern Effects */
 .glass-pill {
-  background: rgba(247, 242, 232, 0.75);
+  background: var(--nav-pill-bg);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(232, 221, 205, 0.65);
+  border: 1px solid var(--nav-pill-border);
   box-shadow: 0 10px 30px rgba(18, 60, 50, 0.06);
 }
 
 .glass-card {
-  background: rgba(252, 250, 246, 0.85);
+  background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(232, 221, 205, 0.8);
+  border: 1px solid var(--border-card);
   box-shadow: var(--shadow-subtle);
   border-radius: var(--radius-lg);
   transition: var(--transition-smooth);
@@ -180,7 +225,7 @@ a {
   justify-content: center;
   gap: 0.75rem;
   background-color: var(--color-forest);
-  color: var(--color-ivory);
+  color: var(--color-warm-white);
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 600;
@@ -224,7 +269,7 @@ a {
   text-decoration: none;
 
   &:hover {
-    background-color: rgba(18, 60, 50, 0.05);
+    background-color: rgba(175, 196, 168, 0.15);
     border-color: var(--color-botanical);
     color: var(--color-botanical);
     transform: translateY(-2px);
@@ -241,7 +286,7 @@ a {
   justify-content: center;
   gap: 0.75rem;
   background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-  color: #ffffff;
+  color: #ffffff !important;
   font-family: var(--font-sans);
   font-size: 0.98rem;
   font-weight: 600;
@@ -256,7 +301,7 @@ a {
   &:hover {
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 10px 28px rgba(37, 211, 102, 0.45);
-    color: #ffffff;
+    color: #ffffff !important;
   }
 
   &:active {
@@ -309,11 +354,105 @@ a {
   }
 }
 
+html.dark .highlight-organic::before {
+  background-color: var(--color-botanical);
+  opacity: 0.4;
+}
+
 /* Focus styles for WCAG accessibility */
 :focus-visible {
   outline: 2px solid var(--color-botanical);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* ==========================================================================
+   DARK THEME COMPONENT SPECIFIC ADJUSTMENTS
+   ========================================================================== */
+html.dark {
+  .hero-section {
+    background: radial-gradient(circle at 10% 20%, rgba(19, 45, 38, 0.9) 0%, rgba(11, 25, 21, 1) 70%);
+  }
+
+  .hero-floating-card,
+  .hero-status-pill,
+  .service-card,
+  .silhouette-card,
+  .recommendation-card,
+  .timeline-step-card,
+  .domicilio-atmosphere-card,
+  .location-floating-card,
+  .testimonial-card,
+  .faq-item,
+  .card-video-canvas,
+  .instagram-invite-row {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .service-benefits,
+  .rec-tip-box,
+  .step-detail-box {
+    background-color: var(--color-warm-white) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .zone-chip {
+    background-color: var(--bg-surface-subtle) !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--color-charcoal) !important;
+
+    &.active {
+      background-color: var(--color-botanical) !important;
+      color: #0B1915 !important;
+      font-weight: 700;
+    }
+  }
+
+  .services-footer-banner,
+  .faq-support-box {
+    background: rgba(19, 45, 38, 0.85) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .banner-icon,
+  .support-icon {
+    background-color: var(--bg-surface) !important;
+  }
+
+  .overlapping-quote-card,
+  .experience-badge,
+  .media-badge {
+    background: rgba(16, 38, 32, 0.96) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .rec-treatment-box {
+    background: linear-gradient(135deg, var(--color-ivory) 0%, var(--bg-surface) 100%) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .treatment-icon {
+    background-color: rgba(175, 196, 168, 0.15) !important;
+  }
+
+  .credential-item {
+    background-color: var(--color-ivory) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .mobile-sticky-bar {
+    background: rgba(14, 34, 28, 0.96) !important;
+    border-top-color: var(--border-subtle) !important;
+  }
+
+  .footer-logo-img {
+    filter: brightness(0) invert(1) !important;
+  }
+
+  .brand-emblem {
+    filter: drop-shadow(0 0 8px rgba(175, 196, 168, 0.3));
+  }
 }
 
 /* Reduced Motion preferences */

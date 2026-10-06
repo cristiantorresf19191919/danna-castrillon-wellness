@@ -32,8 +32,23 @@
       </ul>
     </nav>
 
-    <!-- Desktop CTA Action -->
+    <!-- Desktop CTA Action & Theme Toggle -->
     <div class="nav-actions">
+      <!-- Theme Switcher Button (Desktop & Tablet) -->
+      <button 
+        type="button" 
+        class="theme-toggle-btn"
+        (click)="toggleTheme()" 
+        [attr.aria-label]="themeService.isDark() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+        [title]="themeService.isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+      >
+        @if (themeService.isDark()) {
+          <app-icon name="sun" [size]="19" customClass="text-amber-300" />
+        } @else {
+          <app-icon name="moon" [size]="19" customClass="text-forest" />
+        }
+      </button>
+
       <a 
         [href]="getWhatsAppBookingUrl()" 
         target="_blank" 
@@ -113,6 +128,24 @@
       </nav>
 
       <div class="drawer-footer">
+        <!-- Mobile Drawer Theme Switch Bar -->
+        <button 
+          type="button" 
+          class="drawer-theme-toggle"
+          (click)="toggleTheme()"
+        >
+          <div class="toggle-info">
+            @if (themeService.isDark()) {
+              <app-icon name="sun" [size]="18" customClass="text-amber-300" />
+              <span>Modo Nocturno Spa (Activo)</span>
+            } @else {
+              <app-icon name="moon" [size]="18" customClass="text-forest" />
+              <span>Modo Diurno Sereno (Activo)</span>
+            }
+          </div>
+          <span class="toggle-action-tag">Cambiar</span>
+        </button>
+
         <div class="drawer-location-info">
           <app-icon name="map-pin" [size]="16" customClass="text-botanical" />
           <span>La Soledad · Teusaquillo · Domicilios Bogotá</span>
