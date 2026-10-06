@@ -38,29 +38,69 @@
         <div class="silhouette-header">
           <span class="silhouette-hint">
             <app-icon name="compass" [size]="15" customClass="text-botanical" />
-            Toca los puntos en la silueta
+            @if (displayMode() === '3d') {
+              <span>Modelo 3D Three.js · Gira y explora</span>
+            } @else {
+              <span>Toca los puntos en la silueta</span>
+            }
           </span>
 
-          <div class="view-toggle-pill">
-            <button 
-              type="button" 
-              class="toggle-btn" 
-              [class.active]="viewMode() === 'back'"
-              (click)="setViewMode('back')"
-            >
-              Espalda
-            </button>
-            <button 
-              type="button" 
-              class="toggle-btn" 
-              [class.active]="viewMode() === 'front'"
-              (click)="setViewMode('front')"
-            >
-              Frente
-            </button>
+          <div class="header-controls-group">
+            <!-- 3D / 2D Mode Switcher -->
+            <div class="mode-toggle-pill" role="group" aria-label="Modo de visualización">
+              <button 
+                type="button" 
+                class="mode-btn" 
+                [class.active]="displayMode() === '3d'"
+                (click)="setDisplayMode('3d')"
+                title="Vista 3D interactiva Three.js"
+              >
+                <span class="pill-sparkle">✨</span>
+                <span class="mode-label">3D</span>
+              </button>
+              <button 
+                type="button" 
+                class="mode-btn" 
+                [class.active]="displayMode() === '2d'"
+                (click)="setDisplayMode('2d')"
+                title="Vista 2D clásica"
+              >
+                <span class="mode-label">2D</span>
+              </button>
+            </div>
+
+            @if (displayMode() === '2d') {
+              <div class="view-toggle-pill">
+                <button 
+                  type="button" 
+                  class="toggle-btn" 
+                  [class.active]="viewMode() === 'back'"
+                  (click)="setViewMode('back')"
+                >
+                  Espalda
+                </button>
+                <button 
+                  type="button" 
+                  class="toggle-btn" 
+                  [class.active]="viewMode() === 'front'"
+                  (click)="setViewMode('front')"
+                >
+                  Frente
+                </button>
+              </div>
+            }
           </div>
         </div>
 
+        @if (displayMode() === '3d') {
+          <div class="canvas-3d-container">
+            <app-body-canvas-3d
+              [activeZoneId]="activeZone().id"
+              (zoneSelected)="selectZone($event)"
+              (viewModeChange)="setViewMode($event)"
+            />
+          </div>
+        } @else {
         <div class="svg-container">
           <!-- Minimal Tasteful Human Body Silhouette -->
           <svg 
@@ -204,6 +244,7 @@
             </g>
           </svg>
         </div>
+      }
       </div>
 
       <!-- Recommendation Panel -->
