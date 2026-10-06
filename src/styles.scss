@@ -446,16 +446,66 @@ html.dark {
     border-color: var(--border-subtle) !important;
   }
 
+  .steps-nav-tracker {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .step-nav-pill {
+    color: var(--color-charcoal-muted) !important;
+
+    &:hover {
+      background: var(--bg-surface-subtle) !important;
+      color: var(--color-forest) !important;
+    }
+
+    &.active {
+      background-color: var(--color-botanical) !important;
+      color: #0B1915 !important;
+      box-shadow: 0 4px 14px rgba(102, 194, 165, 0.35) !important;
+
+      .step-nav-pill-num {
+        background: rgba(11, 25, 21, 0.25) !important;
+        color: #0B1915 !important;
+      }
+    }
+
+    &.completed {
+      color: var(--color-botanical) !important;
+    }
+  }
+
   .step-badge-node {
-    border-color: var(--bg-primary) !important;
-    background-color: var(--bg-surface-subtle) !important;
+    border-color: var(--border-subtle) !important;
+    background-color: var(--bg-surface) !important;
     color: var(--color-forest) !important;
   }
 
   .timeline-step-row.step-active .step-badge-node {
     background-color: var(--color-botanical) !important;
     color: #0B1915 !important;
+    border-color: var(--color-sage-light) !important;
     box-shadow: 0 0 0 6px rgba(102, 194, 165, 0.3) !important;
+  }
+
+  .timeline-step-row.step-current .timeline-step-card {
+    border-color: var(--color-botanical) !important;
+  }
+
+  .btn-step-next {
+    background: var(--bg-surface-subtle) !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--color-forest) !important;
+
+    &:hover {
+      background: var(--color-botanical) !important;
+      color: #0B1915 !important;
+      border-color: var(--color-botanical) !important;
+
+      strong {
+        color: #0B1915 !important;
+      }
+    }
   }
 
   .mobile-sticky-bar {

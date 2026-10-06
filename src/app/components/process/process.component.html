@@ -14,11 +14,35 @@
       </p>
     </div>
 
+    <!-- Interactive Stepper Tracker Navigation (Pills) -->
+    <div class="steps-nav-tracker" role="tablist" aria-label="Etapas de la sesión">
+      @for (step of steps(); track step.number; let idx = $index) {
+        <button 
+          type="button"
+          class="step-nav-pill"
+          [class.active]="activeStepIndex() === idx"
+          [class.completed]="activeStepIndex() > idx"
+          (click)="scrollToStep(idx)"
+          [attr.aria-selected]="activeStepIndex() === idx"
+          role="tab"
+        >
+          <span class="step-nav-pill-num">
+            @if (activeStepIndex() > idx) {
+              <app-icon name="check" [size]="12" />
+            } @else {
+              {{ step.number }}
+            }
+          </span>
+          <span class="step-nav-pill-name">{{ getShortStepName(step.number) }}</span>
+        </button>
+      }
+    </div>
+
     <!-- Timeline Container -->
     <div class="timeline-container">
-      <!-- Continuous center vertical line for desktop -->
+      <!-- Continuous center vertical line track -->
       <div class="timeline-line-track" aria-hidden="true">
-        <div class="timeline-progress-bar"></div>
+        <div class="timeline-progress-bar" [style.height.%]="progressPercent()"></div>
       </div>
 
       <!-- Steps sequence -->
@@ -27,19 +51,43 @@
           <div 
             class="timeline-step-row" 
             [class.row-inverted]="i % 2 !== 0"
+            [class.step-active]="activeStepIndex() >= i"
+            [class.step-current]="activeStepIndex() === i"
+            [attr.data-step-index]="i"
           >
-            <!-- Step marker in center -->
+            <!-- Step marker node -->
             <div class="timeline-marker-wrapper">
-              <div class="step-badge-node">
-                <span class="node-number">{{ step.number }}</span>
-              </div>
+              <button 
+                type="button" 
+                class="step-badge-node"
+                (click)="scrollToStep(i)"
+                [attr.aria-label]="'Ir al paso ' + step.number"
+              >
+                @if (activeStepIndex() > i) {
+                  <app-icon name="check" [size]="18" />
+                } @else {
+                  <span class="node-number">{{ step.number }}</span>
+                }
+              </button>
             </div>
 
             <!-- Content card -->
             <div class="timeline-step-card glass-card">
+              <div class="card-step-meta-bar">
+                <span class="step-badge-pill">
+                  Paso {{ step.number }} de 04
+                </span>
+                @if (activeStepIndex() === i) {
+                  <span class="step-status-active-pill">
+                    <span class="pulse-dot"></span>
+                    Etapa activa
+                  </span>
+                }
+              </div>
+
               <div class="card-step-header">
                 <div class="step-icon-box">
-                  <app-icon [name]="step.icon" [size]="20" customClass="text-botanical" />
+                  <app-icon [name]="step.icon" [size]="22" customClass="text-botanical" />
                 </div>
                 <div class="step-title-meta">
                   <span class="step-subtitle">{{ step.subtitle }}</span>
@@ -52,8 +100,32 @@
               </p>
 
               <div class="step-detail-box">
-                <app-icon name="check" [size]="14" customClass="text-sage" />
+                <app-icon name="check" [size]="16" customClass="text-sage" />
                 <span>{{ step.detail }}</span>
+              </div>
+
+              <!-- Next step or CTA -->
+              <div class="card-step-footer">
+                @if (i < steps().length - 1) {
+                  <button 
+                    type="button" 
+                    class="btn-step-next"
+                    (click)="scrollToStep(i + 1)"
+                  >
+                    <span>Siguiente: <strong>{{ steps()[i + 1].title }}</strong></span>
+                    <app-icon name="arrow-right" [size]="14" />
+                  </button>
+                } @else {
+                  <a 
+                    [href]="getWhatsAppUrl()" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="btn-step-booking"
+                  >
+                    <app-icon name="whatsapp" [size]="18" />
+                    <span>Agendar mi sesión por WhatsApp</span>
+                  </a>
+                }
               </div>
             </div>
           </div>

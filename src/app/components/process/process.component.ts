@@ -1,4 +1,4 @@
-import { Component, ElementRef, AfterViewInit, OnDestroy, inject } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { WellnessService } from '../../core/services/wellness.service';
@@ -21,22 +21,65 @@ export class ProcessComponent implements AfterViewInit, OnDestroy {
   private observer?: IntersectionObserver;
 
   readonly steps = this.wellnessService.processSteps;
+  readonly activeStepIndex = signal<number>(0);
+
+  readonly progressPercent = computed(() => {
+    const idx = this.activeStepIndex();
+    const total = this.steps().length;
+    if (total <= 1) return 100;
+    return Math.min(100, Math.max(12, Math.round(((idx + 0.5) / total) * 100)));
+  });
+
+  getShortStepName(number: string): string {
+    switch (number) {
+      case '01': return 'Valoración';
+      case '02': return 'Diagnóstico';
+      case '03': return 'Tratamiento';
+      case '04': return 'Autocuidado';
+      default: return `Paso ${number}`;
+    }
+  }
+
+  scrollToStep(index: number): void {
+    if (index < 0 || index >= this.steps().length) return;
+    this.activeStepIndex.set(index);
+    const rows = this.hostRef.nativeElement.querySelectorAll('.timeline-step-row');
+    if (rows[index]) {
+      const headerOffset = 110;
+      const elementPosition = rows[index].getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  getWhatsAppUrl(): string {
+    return this.wellnessService.getWhatsAppUrl(
+      'Hola Danna 👋 Revisé tu proceso de atención paso a paso en la web y quisiera agendar una sesión personalizada.'
+    );
+  }
 
   ngAfterViewInit(): void {
     const host = this.hostRef.nativeElement;
 
-    // 1. IntersectionObserver to highlight each step node & card as the user scrolls
+    // 1. IntersectionObserver to track and highlight each step node & card as the user scrolls
     if (typeof IntersectionObserver !== 'undefined') {
       const rows = host.querySelectorAll('.timeline-step-row');
       this.observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('step-active');
+            const idxAttr = entry.target.getAttribute('data-step-index');
+            if (idxAttr !== null) {
+              const idx = Number(idxAttr);
+              this.activeStepIndex.set(idx);
+            }
           }
         });
       }, {
-        threshold: 0.15,
-        rootMargin: '0px 0px -40px 0px'
+        threshold: 0.25,
+        rootMargin: '-80px 0px -30% 0px'
       });
 
       rows.forEach((row: Element) => this.observer?.observe(row));
@@ -54,15 +97,14 @@ export class ProcessComponent implements AfterViewInit, OnDestroy {
             ease: 'none',
             scrollTrigger: {
               trigger: container,
-              start: 'top 70%',
-              end: 'bottom 75%',
-              scrub: 0.4
+              start: 'top 65%',
+              end: 'bottom 80%',
+              scrub: 0.3
             }
           });
         }
       }, host);
 
-      // Refresh ScrollTrigger once everything is mounted
       setTimeout(() => ScrollTrigger.refresh(), 200);
       if (typeof window !== 'undefined') {
         window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
