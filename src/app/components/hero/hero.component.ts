@@ -43,53 +43,40 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     }
 
     this.ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1 } });
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out', duration: 0.6 } });
 
-      // Staggered reveal for eyebrow, words, text, buttons
-      tl.from('.hero-eyebrow-wrapper', {
-        y: 20,
+      // Staggered subtle reveal for words
+      tl.from('.hero-word', {
+        y: 18,
         opacity: 0,
-        duration: 0.8,
-        delay: 0.1
-      })
-      .from('.hero-word', {
-        y: 40,
-        opacity: 0,
-        stagger: 0.08,
-        duration: 0.85
-      }, '-=0.5')
-      .from('.hero-lead-text', {
-        y: 20,
-        opacity: 0,
-        duration: 0.8
-      }, '-=0.5')
-      .from('.hero-cta-group', {
-        y: 25,
-        opacity: 0,
-        duration: 0.8
-      }, '-=0.5')
-      .from('.hero-trust-bar', {
-        y: 15,
-        opacity: 0,
-        duration: 0.7
-      }, '-=0.5');
-
-      // Image organic entrance
-      gsap.from('.hero-portrait-frame', {
-        scale: 0.94,
-        opacity: 0,
-        duration: 1.4,
-        ease: 'power2.out',
-        delay: 0.2
+        stagger: 0.04,
+        duration: 0.5,
+        clearProps: 'all'
       });
 
-      // Floating card bounce in
+      // Subtle image entrance
+      gsap.from('.hero-portrait-frame', {
+        scale: 0.96,
+        opacity: 0.8,
+        duration: 0.7,
+        ease: 'power2.out',
+        clearProps: 'all'
+      });
+
+      // Floating card gentle float in
       gsap.from('.hero-floating-card', {
-        y: 35,
-        opacity: 0,
-        duration: 1,
-        ease: 'back.out(1.5)',
-        delay: 0.7
+        y: 15,
+        duration: 0.7,
+        ease: 'power2.out',
+        clearProps: 'all'
+      });
+
+      // Status pill gentle entrance
+      gsap.from('.hero-status-pill', {
+        y: -10,
+        duration: 0.7,
+        ease: 'power2.out',
+        clearProps: 'all'
       });
 
       // Subtle slow floating loop for background botanical blobs
