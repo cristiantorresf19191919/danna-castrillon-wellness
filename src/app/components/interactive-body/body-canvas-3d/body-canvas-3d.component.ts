@@ -257,7 +257,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     const canvas = this.canvasRef.nativeElement;
     const wrapper = this.wrapperRef.nativeElement;
     const width = wrapper.clientWidth || 320;
-    const height = Math.max(wrapper.clientHeight, 440);
+    const height = wrapper.clientHeight || 480;
 
     // 1. Scene
     this.scene = new THREE.Scene();
@@ -689,7 +689,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     // 1. Intersection Observer: pause when off-screen
     this.intersectionObserver = new IntersectionObserver((entries) => {
       this.isVisible = entries[0]?.isIntersecting ?? true;
-    }, { threshold: 0.1 });
+    }, { threshold: 0, rootMargin: '120px 0px' });
 
     this.intersectionObserver.observe(this.wrapperRef.nativeElement);
 
@@ -698,10 +698,12 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       const entry = entries[0];
       if (entry) {
         const width = entry.contentRect.width;
-        const height = Math.max(entry.contentRect.height, 440);
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(width, height);
+        const height = entry.contentRect.height;
+        if (width > 0 && height > 0) {
+          this.camera.aspect = width / height;
+          this.camera.updateProjectionMatrix();
+          this.renderer.setSize(width, height);
+        }
       }
     });
 
@@ -730,8 +732,10 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       const deltaY = event.clientY - this.previousPointerPosition.y;
 
       this.targetRotationY += deltaX * 0.009;
-      this.targetRotationX += deltaY * 0.006;
-      this.targetRotationX = Math.max(-0.35, Math.min(0.35, this.targetRotationX));
+      if (event.pointerType !== 'touch') {
+        this.targetRotationX += deltaY * 0.006;
+        this.targetRotationX = Math.max(-0.35, Math.min(0.35, this.targetRotationX));
+      }
 
       this.previousPointerPosition = { x: event.clientX, y: event.clientY };
       this.lastInteractionTime = Date.now();

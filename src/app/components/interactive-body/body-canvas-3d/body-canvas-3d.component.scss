@@ -1,7 +1,7 @@
 .canvas-3d-wrapper {
   position: relative;
   width: 100%;
-  height: 520px;
+  height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,7 +9,11 @@
   border-radius: var(--radius-lg, 24px);
   background: radial-gradient(circle at 50% 40%, rgba(247, 242, 232, 0.6) 0%, rgba(232, 221, 205, 0.25) 100%);
   user-select: none;
-  touch-action: none;
+  touch-action: pan-y;
+
+  @media (max-width: 600px) {
+    height: 380px;
+  }
 }
 
 :host-context(.dark) .canvas-3d-wrapper {
@@ -238,7 +242,29 @@
 
 @media (max-width: 600px) {
   .canvas-3d-wrapper {
-    height: 440px;
+    height: 380px;
+  }
+
+  .controls-overlay {
+    top: 0.65rem;
+    left: 0.65rem;
+    right: 0.65rem;
+  }
+
+  .view-pill,
+  .actions-pill {
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .view-btn {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.74rem;
+  }
+
+  .action-btn {
+    padding: 0.3rem 0.55rem;
+    font-size: 0.72rem;
   }
 
   .interaction-guide {

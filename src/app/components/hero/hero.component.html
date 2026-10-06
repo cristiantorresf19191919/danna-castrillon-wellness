@@ -25,18 +25,36 @@
       </div>
 
       <h1 class="headline-hero hero-headline">
-        <span class="hero-word-row">
-          <span class="hero-word">Tu</span>
-          <span class="hero-word">cuerpo</span>
-        </span>
-        <span class="hero-word-row">
-          <span class="hero-word">también</span>
-          <span class="hero-word">necesita</span>
-        </span>
-        <span class="hero-word-row">
-          <span class="hero-word highlight-organic">una pausa.</span>
-        </span>
+        <span class="hero-word">Tu</span>
+        <span class="hero-word">cuerpo</span>
+        <span class="hero-word">también</span>
+        <span class="hero-word">necesita</span>
+        <span class="hero-word highlight-organic">una pausa.</span>
       </h1>
+
+      <!-- Mobile-only Visual Insertion for Immediate Connection with Danna -->
+      <div class="hero-visual-mobile" aria-hidden="true">
+        <div class="hero-portrait-frame-mobile">
+          <img 
+            src="assets/images/danna-portrait.jpg" 
+            alt="Danna Castrillón - Terapeuta física en Bogotá" 
+            class="hero-therapist-img"
+            width="819" 
+            height="1024"
+            fetchpriority="high"
+          />
+        </div>
+        <div class="hero-mobile-badges">
+          <div class="hero-status-pill-mobile">
+            <span class="status-pulse"></span>
+            <span>Agenda disponible esta semana</span>
+          </div>
+          <div class="hero-loc-pill-mobile">
+            <app-icon name="map-pin" [size]="14" customClass="text-botanical" />
+            <span>La Soledad · Domicilios Bogotá</span>
+          </div>
+        </div>
+      </div>
 
       <p class="hero-lead-text">
         Libera tensión, reduce el estrés y vuelve a sentirte mejor con cuidado profesional en un espacio sereno pensado exclusivamente para tu descanso.
@@ -80,9 +98,9 @@
       </div>
     </div>
 
-    <!-- Right Column: Large Authentic Portrait of Danna with Organic Mask -->
+    <!-- Right Column: Large Authentic Portrait of Danna with Organic Mask (Desktop & Tablet) -->
     <div 
-      class="hero-visual" 
+      class="hero-visual hero-visual-desktop" 
       #imageWrapper
       [style.transform]="'translate3d(' + mouseX() + 'px, ' + mouseY() + 'px, 0)'"
     >

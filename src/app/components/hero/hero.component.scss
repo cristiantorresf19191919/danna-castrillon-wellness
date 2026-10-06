@@ -77,25 +77,113 @@
 
 .hero-headline {
   margin: 0;
-  display: flex;
-  flex-direction: column;
-}
+  line-height: 1.12;
+  font-size: clamp(2.35rem, 5.8vw, 4.75rem);
+  letter-spacing: -0.025em;
 
-.hero-word-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4em;
+  @media (max-width: 600px) {
+    font-size: 2.35rem;
+    line-height: 1.15;
+  }
 }
 
 .hero-word {
   display: inline-block;
+  margin-right: 0.22em;
+
+  &.highlight-organic {
+    margin-right: 0;
+    position: relative;
+    color: var(--color-forest);
+    font-style: italic;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: -0.12em;
+      right: -0.22em;
+      bottom: 0.06em;
+      height: 0.42em;
+      background: rgba(175, 196, 168, 0.42);
+      border-radius: var(--radius-pill);
+      z-index: -1;
+      transform: rotate(-1.5deg);
+    }
+  }
+}
+
+/* Mobile-Only Portrait Frame (Immediately under headline on mobile) */
+.hero-visual-mobile {
+  display: none;
+
+  @media (max-width: 991px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    margin: 0.4rem 0 0.85rem 0;
+  }
+}
+
+.hero-portrait-frame-mobile {
+  width: 220px;
+  height: 250px;
+  border-radius: 46% 54% 50% 50% / 46% 46% 54% 54%;
+  overflow: hidden;
+  border: 3px solid rgba(175, 196, 168, 0.45);
+  box-shadow: 0 16px 36px -8px rgba(18, 60, 50, 0.18);
+  background-color: var(--color-ivory);
+
+  .hero-therapist-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 12%;
+  }
+}
+
+.hero-mobile-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hero-status-pill-mobile,
+.hero-loc-pill-mobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  background: var(--bg-card, rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--border-card, rgba(232, 221, 205, 0.9));
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-forest);
+  box-shadow: 0 2px 8px rgba(18, 60, 50, 0.05);
+
+  .status-pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #22c55e;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    animation: statusPulse 2s infinite;
+  }
 }
 
 .hero-lead-text {
-  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  font-size: clamp(1.02rem, 1.3vw, 1.25rem);
   line-height: 1.65;
   color: var(--color-charcoal-muted);
   max-width: 540px;
+
+  @media (max-width: 600px) {
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
 }
 
 .hero-cta-group {
@@ -104,15 +192,37 @@
   align-items: center;
   gap: 1.1rem;
   padding-top: 0.5rem;
+
+  @media (max-width: 600px) {
+    gap: 0.75rem;
+    width: 100%;
+
+    .hero-primary-cta,
+    .hero-secondary-cta {
+      width: 100%;
+      justify-content: center;
+      padding: 0.85rem 1.5rem;
+    }
+  }
 }
 
 .hero-primary-cta {
   font-size: 1.02rem;
   padding: 1rem 2.2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 .hero-secondary-cta {
   padding: 0.95rem 1.8rem;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 /* Trust Bar */
@@ -164,6 +274,12 @@
   justify-content: center;
   align-items: center;
   transition: transform 0.15s ease-out;
+
+  &.hero-visual-desktop {
+    @media (max-width: 991px) {
+      display: none;
+    }
+  }
 }
 
 .visual-wrapper {

@@ -9,7 +9,31 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.25rem;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.75rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-bottom: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .zone-chip {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      white-space: nowrap;
+      padding: 0.45rem 0.95rem;
+      font-size: 0.8rem;
+    }
+  }
 }
 
 .zone-chip {
@@ -75,6 +99,10 @@
   border: 1px solid rgba(232, 221, 205, 0.8);
   box-shadow: var(--shadow-subtle);
   position: relative;
+
+  @media (max-width: 600px) {
+    padding: 1.25rem 0.85rem;
+  }
 }
 
 .silhouette-header {

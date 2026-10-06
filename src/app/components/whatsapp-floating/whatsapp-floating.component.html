@@ -20,8 +20,13 @@
   </a>
 </aside>
 
-<!-- Mobile Sticky Bottom Bar -->
-<div class="mobile-sticky-bar" role="region" aria-label="Barra fija de agendamiento móvil">
+<!-- Mobile Sticky Bottom Bar (Appears smoothly after scrolling past Hero) -->
+<div 
+  class="mobile-sticky-bar" 
+  [class.visible]="isScrolled()"
+  role="region" 
+  aria-label="Barra fija de agendamiento móvil"
+>
   <div class="sticky-inner">
     <div class="sticky-info">
       <strong class="sticky-name">Danna Castrillón</strong>
