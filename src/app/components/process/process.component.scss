@@ -80,20 +80,20 @@
 }
 
 .step-badge-node {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background-color: var(--color-forest);
-  border: 3px solid #ffffff;
-  box-shadow: 0 4px 14px rgba(18, 60, 50, 0.2);
+  border: 3px solid var(--bg-surface, #ffffff);
+  box-shadow: 0 4px 14px rgba(18, 60, 50, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--color-warm-white, #ffffff);
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 1.1rem;
-  transition: transform 0.3s ease;
+  font-size: 1.15rem;
+  transition: all 0.35s ease;
 
   &:hover {
     transform: scale(1.1);
@@ -101,19 +101,33 @@
   }
 }
 
+.timeline-step-row.step-active {
+  .step-badge-node {
+    background-color: var(--color-botanical);
+    box-shadow: 0 0 0 6px rgba(175, 196, 168, 0.32), 0 6px 18px rgba(30, 92, 70, 0.22);
+    transform: scale(1.08);
+  }
+
+  .timeline-step-card {
+    border-color: var(--color-sage);
+    box-shadow: var(--shadow-elevated, 0 16px 36px rgba(18, 60, 50, 0.09));
+  }
+}
+
 .timeline-step-card {
-  padding: 2rem;
-  background: #ffffff;
-  border: 1px solid rgba(232, 221, 205, 0.9);
-  box-shadow: 0 8px 24px rgba(18, 60, 50, 0.05);
+  padding: 2.25rem 2rem;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-card, rgba(232, 221, 205, 0.9));
+  box-shadow: var(--shadow-subtle, 0 8px 24px rgba(18, 60, 50, 0.05));
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  transition: all 0.3s ease;
+  gap: 1.15rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 16px 36px rgba(18, 60, 50, 0.09);
+    box-shadow: var(--shadow-elevated, 0 16px 36px rgba(18, 60, 50, 0.09));
     border-color: var(--color-sage);
   }
 }
@@ -124,10 +138,10 @@
   gap: 1rem;
 
   .step-icon-box {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background-color: var(--color-ivory);
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-surface-subtle, var(--color-ivory));
     display: flex;
     align-items: center;
     justify-content: center;

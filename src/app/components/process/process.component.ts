@@ -18,43 +18,60 @@ export class ProcessComponent implements AfterViewInit, OnDestroy {
   private readonly wellnessService = inject(WellnessService);
   private readonly hostRef = inject(ElementRef);
   private ctx?: gsap.Context;
+  private observer?: IntersectionObserver;
 
   readonly steps = this.wellnessService.processSteps;
 
   ngAfterViewInit(): void {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
+    const host = this.hostRef.nativeElement;
+
+    // 1. IntersectionObserver to highlight each step node & card as the user scrolls
+    if (typeof IntersectionObserver !== 'undefined') {
+      const rows = host.querySelectorAll('.timeline-step-row');
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('step-active');
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      rows.forEach((row: Element) => this.observer?.observe(row));
     }
 
-    this.ctx = gsap.context(() => {
-      // Animate progress line with scroll
-      gsap.to('.timeline-progress-bar', {
-        height: '100%',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.timeline-container',
-          start: 'top 70%',
-          end: 'bottom 80%',
-          scrub: 0.5
+    // 2. Animate vertical progress bar line with GSAP ScrollTrigger
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.ctx = gsap.context(() => {
+        const container = host.querySelector('.timeline-container');
+        const progressBar = host.querySelector('.timeline-progress-bar');
+        
+        if (container && progressBar) {
+          gsap.to(progressBar, {
+            height: '100%',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: container,
+              start: 'top 70%',
+              end: 'bottom 75%',
+              scrub: 0.4
+            }
+          });
         }
-      });
+      }, host);
 
-      // Stagger steps entrance
-      gsap.from('.timeline-step-card', {
-        y: 35,
-        opacity: 0,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.timeline-container',
-          start: 'top 75%'
-        }
-      });
-    }, this.hostRef.nativeElement);
+      // Refresh ScrollTrigger once everything is mounted
+      setTimeout(() => ScrollTrigger.refresh(), 200);
+      if (typeof window !== 'undefined') {
+        window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+      }
+    }
   }
 
   ngOnDestroy(): void {
+    this.observer?.disconnect();
     if (this.ctx) {
       this.ctx.revert();
     }

@@ -441,6 +441,18 @@ html.dark {
     border-color: var(--border-subtle) !important;
   }
 
+  .step-badge-node {
+    border-color: var(--bg-primary) !important;
+    background-color: var(--bg-surface-subtle) !important;
+    color: var(--color-forest) !important;
+  }
+
+  .timeline-step-row.step-active .step-badge-node {
+    background-color: var(--color-botanical) !important;
+    color: #0B1915 !important;
+    box-shadow: 0 0 0 6px rgba(102, 194, 165, 0.3) !important;
+  }
+
   .mobile-sticky-bar {
     background: rgba(14, 34, 28, 0.96) !important;
     border-top-color: var(--border-subtle) !important;
