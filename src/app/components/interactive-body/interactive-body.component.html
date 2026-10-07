@@ -3,18 +3,43 @@
     <!-- Header -->
     <div class="section-header-centered">
       <span class="eyebrow">
-        <app-icon name="activity" [size]="16" customClass="text-botanical" />
-        MAPA INTERACTIVO DE BIENESTAR
+        <app-icon name="sparkles" [size]="16" customClass="text-botanical" />
+        MAPA 3D ANATÓMICO & BIENESTAR TERAPÉUTICO
       </span>
       <h2 id="body-section-title" class="headline-section">
-        ¿Dónde sientes la tensión?
+        Explora tu cuerpo en 3D: Muscular, Linfático y Relajación
       </h2>
       <p class="subtitle-section mx-auto">
-        Toca en la silueta o selecciona la zona donde se concentra tu sobrecarga para ver qué tipo de terapia y cuidados recomienda Danna.
+        Gira el modelo tridimensional, alterna entre las capas anatómicas y descubre cómo cada terapia alivia tus contracturas, desinflama tu cuerpo o calma tu mente.
       </p>
     </div>
 
-    <!-- Quick Zone Selector Chips (Especially useful on mobile) -->
+    <!-- 3D Anatomical Layer Switcher Tabs -->
+    <div class="layer-tabs-nav" role="tablist" aria-label="Capas terapéuticas de masaje">
+      @for (layer of massageLayers(); track layer.id) {
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="activeMassageLayer().id === layer.id"
+          class="layer-tab-btn"
+          [class.active]="activeMassageLayer().id === layer.id"
+          [class.tab-muscular]="layer.id === 'muscular'"
+          [class.tab-linfatico]="layer.id === 'linfatico'"
+          [class.tab-relajacion]="layer.id === 'relajacion'"
+          (click)="selectLayer(layer.id)"
+        >
+          <div class="tab-icon-wrap">
+            <app-icon [name]="layer.icon" [size]="18" />
+          </div>
+          <div class="tab-info">
+            <span class="tab-title">{{ layer.title }}</span>
+            <span class="tab-sub">{{ layer.tag }}</span>
+          </div>
+        </button>
+      }
+    </div>
+
+    <!-- Quick Zone Selector Chips (Useful on all viewports) -->
     <div class="zone-chips-container" role="tablist" aria-label="Zonas del cuerpo">
       @for (zone of zones(); track zone.id) {
         <button 
@@ -39,7 +64,7 @@
           <span class="silhouette-hint">
             <app-icon name="compass" [size]="15" customClass="text-botanical" />
             @if (displayMode() === '3d') {
-              <span>Modelo 3D Three.js · Gira y explora</span>
+              <span>Three.js 3D Activo · Arrastra para girar 360°</span>
             } @else {
               <span>Toca los puntos en la silueta</span>
             }
@@ -56,7 +81,7 @@
                 title="Vista 3D interactiva Three.js"
               >
                 <span class="pill-sparkle">✨</span>
-                <span class="mode-label">3D</span>
+                <span class="mode-label">3D Three.js</span>
               </button>
               <button 
                 type="button" 
@@ -96,181 +121,149 @@
           <div class="canvas-3d-container">
             <app-body-canvas-3d
               [activeZoneId]="activeZone().id"
+              [activeLayer]="activeMassageLayer().id"
               (zoneSelected)="selectZone($event)"
               (viewModeChange)="setViewMode($event)"
+              (layerChange)="selectLayer($event)"
             />
           </div>
         } @else {
-        <div class="svg-container">
-          <!-- Minimal Tasteful Human Body Silhouette -->
-          <svg 
-            viewBox="0 0 300 440" 
-            class="human-body-svg" 
-            xmlns="http://www.w3.org/2000/svg"
-            role="img" 
-            aria-label="Silueta del cuerpo humano para selección de dolor y tensión"
-          >
-            <!-- Silhouette contour -->
-            <defs>
-              <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E8DDCD" stop-opacity="0.85" />
-                <stop offset="100%" stop-color="#D9E4D5" stop-opacity="0.9" />
-              </linearGradient>
-              <filter id="glowEffect" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-            </defs>
+          <div class="svg-container">
+            <!-- Minimal Human Body Silhouette for 2D fallback -->
+            <svg 
+              viewBox="0 0 300 440" 
+              class="human-body-svg" 
+              xmlns="http://www.w3.org/2000/svg"
+              role="img" 
+              aria-label="Silueta del cuerpo humano para selección de dolor y tensión"
+            >
+              <defs>
+                <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#E8DDCD" stop-opacity="0.85" />
+                  <stop offset="100%" stop-color="#D9E4D5" stop-opacity="0.9" />
+                </linearGradient>
+              </defs>
 
-            <!-- Head & Neck -->
-            <path 
-              d="M150 20 C138 20 130 30 130 46 C130 62 138 72 144 76 L144 86 C132 90 114 96 102 104 C92 110 82 128 78 152 C74 176 70 210 68 238 C66 250 72 254 78 248 C84 240 88 220 92 195 L96 195 L96 230 C96 242 102 250 110 250 C120 250 128 258 130 274 L126 350 C124 374 122 410 132 418 C140 424 144 416 144 394 L146 320 L150 270 L154 320 L156 394 C156 416 160 424 168 418 C178 410 176 374 174 350 L170 274 C172 258 180 250 190 250 C198 250 204 242 204 230 L204 195 L208 195 C212 220 216 240 222 248 C228 254 234 250 232 238 C230 210 226 176 222 152 C218 128 208 110 198 104 C186 96 168 90 156 86 L156 76 C162 72 170 62 170 46 C170 30 162 20 150 20 Z" 
-              fill="url(#bodyGradient)" 
-              stroke="#AFC4A8" 
-              stroke-width="1.5"
-            />
-
-            <!-- Spine line indication on back view -->
-            @if (viewMode() === 'back') {
               <path 
-                d="M150 86 L150 245" 
-                stroke="#1E5C46" 
-                stroke-width="1.2" 
-                stroke-dasharray="3 3" 
-                opacity="0.35" 
+                d="M150 20 C138 20 130 30 130 46 C130 62 138 72 144 76 L144 86 C132 90 114 96 102 104 C92 110 82 128 78 152 C74 176 70 210 68 238 C66 250 72 254 78 248 C84 240 88 220 92 195 L96 195 L96 230 C96 242 102 250 110 250 C120 250 128 258 130 274 L126 350 C124 374 122 410 132 418 C140 424 144 416 144 394 L146 320 L150 270 L154 320 L156 394 C156 416 160 424 168 418 C178 410 176 374 174 350 L170 274 C172 258 180 250 190 250 C198 250 204 242 204 230 L204 195 L208 195 C212 220 216 240 222 248 C228 254 234 250 232 238 C230 210 226 176 222 152 C218 128 208 110 198 104 C186 96 168 90 156 86 L156 76 C162 72 170 62 170 46 C170 30 162 20 150 20 Z" 
+                fill="url(#bodyGradient)" 
+                stroke="#AFC4A8" 
+                stroke-width="1.5"
               />
-              <!-- Scapula lines -->
-              <path d="M130 118 Q125 140 136 155" stroke="#1E5C46" stroke-width="1" stroke-linecap="round" opacity="0.3" fill="none" />
-              <path d="M170 118 Q175 140 164 155" stroke="#1E5C46" stroke-width="1" stroke-linecap="round" opacity="0.3" fill="none" />
-            } @else {
-              <!-- Clavicle line indication on front view -->
-              <path d="M135 96 Q150 102 165 96" stroke="#1E5C46" stroke-width="1" opacity="0.3" fill="none" />
-            }
 
-            <!-- HOTSPOTS -->
-            <!-- Cuello -->
-            <g 
-              class="body-hotspot-group" 
-              [class.active]="activeZone().id === 'cuello'"
-              (click)="selectZone('cuello')"
-              role="button"
-              tabindex="0"
-              aria-label="Zona Cuello"
-            >
-              <circle cx="150" cy="78" r="18" class="hotspot-pulse" />
-              <circle cx="150" cy="78" r="8" class="hotspot-core" />
-              <text x="150" y="81" text-anchor="middle" class="hotspot-label-text">1</text>
-            </g>
+              <!-- Spine line indication on back view -->
+              @if (viewMode() === 'back') {
+                <path d="M150 86 L150 245" stroke="#1E5C46" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.35" />
+              }
 
-            <!-- Hombros -->
-            <g 
-              class="body-hotspot-group" 
-              [class.active]="activeZone().id === 'hombros'"
-              (click)="selectZone('hombros')"
-              role="button"
-              tabindex="0"
-              aria-label="Zona Hombros"
-            >
-              <circle cx="110" cy="108" r="18" class="hotspot-pulse" />
-              <circle cx="110" cy="108" r="8" class="hotspot-core" />
-              <circle cx="190" cy="108" r="18" class="hotspot-pulse" />
-              <circle cx="190" cy="108" r="8" class="hotspot-core" />
-              <text x="110" y="111" text-anchor="middle" class="hotspot-label-text">2</text>
-              <text x="190" y="111" text-anchor="middle" class="hotspot-label-text">2</text>
-            </g>
+              <!-- Hotspot Cuello -->
+              <g class="body-hotspot-group" [class.active]="activeZone().id === 'cuello'" (click)="selectZone('cuello')" role="button" tabindex="0">
+                <circle cx="150" cy="78" r="16" class="hotspot-pulse" />
+                <circle cx="150" cy="78" r="8" class="hotspot-core" />
+                <text x="150" y="81" text-anchor="middle" class="hotspot-label-text">1</text>
+              </g>
 
-            @if (viewMode() === 'back') {
-              <!-- Espalda Alta -->
-              <g 
-                class="body-hotspot-group" 
-                [class.active]="activeZone().id === 'espalda-alta'"
-                (click)="selectZone('espalda-alta')"
-                role="button"
-                tabindex="0"
-                aria-label="Zona Espalda Alta"
-              >
-                <circle cx="150" cy="140" r="18" class="hotspot-pulse" />
+              <!-- Hotspot Hombros -->
+              <g class="body-hotspot-group" [class.active]="activeZone().id === 'hombros'" (click)="selectZone('hombros')" role="button" tabindex="0">
+                <circle cx="110" cy="108" r="16" class="hotspot-pulse" />
+                <circle cx="110" cy="108" r="8" class="hotspot-core" />
+                <circle cx="190" cy="108" r="16" class="hotspot-pulse" />
+                <circle cx="190" cy="108" r="8" class="hotspot-core" />
+                <text x="110" y="111" text-anchor="middle" class="hotspot-label-text">2</text>
+                <text x="190" y="111" text-anchor="middle" class="hotspot-label-text">2</text>
+              </g>
+
+              <!-- Hotspot Espalda Alta -->
+              <g class="body-hotspot-group" [class.active]="activeZone().id === 'espalda-alta'" (click)="selectZone('espalda-alta')" role="button" tabindex="0">
+                <circle cx="150" cy="140" r="16" class="hotspot-pulse" />
                 <circle cx="150" cy="140" r="8" class="hotspot-core" />
                 <text x="150" y="143" text-anchor="middle" class="hotspot-label-text">3</text>
               </g>
 
-              <!-- Espalda Baja -->
-              <g 
-                class="body-hotspot-group" 
-                [class.active]="activeZone().id === 'espalda-baja'"
-                (click)="selectZone('espalda-baja')"
-                role="button"
-                tabindex="0"
-                aria-label="Zona Espalda Baja"
-              >
-                <circle cx="150" cy="200" r="18" class="hotspot-pulse" />
+              <!-- Hotspot Espalda Baja -->
+              <g class="body-hotspot-group" [class.active]="activeZone().id === 'espalda-baja'" (click)="selectZone('espalda-baja')" role="button" tabindex="0">
+                <circle cx="150" cy="200" r="16" class="hotspot-pulse" />
                 <circle cx="150" cy="200" r="8" class="hotspot-core" />
                 <text x="150" y="203" text-anchor="middle" class="hotspot-label-text">4</text>
               </g>
-            } @else {
-              <!-- Brazos y Manos (Front view focus) -->
-              <g 
-                class="body-hotspot-group" 
-                [class.active]="activeZone().id === 'brazos-manos'"
-                (click)="selectZone('brazos-manos')"
-                role="button"
-                tabindex="0"
-                aria-label="Zona Brazos y Manos"
-              >
-                <circle cx="75" cy="190" r="18" class="hotspot-pulse" />
+
+              <!-- Hotspot Brazos -->
+              <g class="body-hotspot-group" [class.active]="activeZone().id === 'brazos-manos'" (click)="selectZone('brazos-manos')" role="button" tabindex="0">
+                <circle cx="75" cy="190" r="16" class="hotspot-pulse" />
                 <circle cx="75" cy="190" r="8" class="hotspot-core" />
-                <circle cx="225" cy="190" r="18" class="hotspot-pulse" />
+                <circle cx="225" cy="190" r="16" class="hotspot-pulse" />
                 <circle cx="225" cy="190" r="8" class="hotspot-core" />
                 <text x="75" y="193" text-anchor="middle" class="hotspot-label-text">5</text>
                 <text x="225" y="193" text-anchor="middle" class="hotspot-label-text">5</text>
               </g>
-            }
 
-            <!-- Piernas -->
-            <g 
-              class="body-hotspot-group" 
-              [class.active]="activeZone().id === 'piernas'"
-              (click)="selectZone('piernas')"
-              role="button"
-              tabindex="0"
-              aria-label="Zona Piernas"
-            >
-              <circle cx="135" cy="320" r="18" class="hotspot-pulse" />
-              <circle cx="135" cy="320" r="8" class="hotspot-core" />
-              <circle cx="165" cy="320" r="18" class="hotspot-pulse" />
-              <circle cx="165" cy="320" r="8" class="hotspot-core" />
-              <text x="135" y="323" text-anchor="middle" class="hotspot-label-text">6</text>
-              <text x="165" y="323" text-anchor="middle" class="hotspot-label-text">6</text>
-            </g>
-          </svg>
-        </div>
-      }
+              <!-- Hotspot Piernas -->
+              <g class="body-hotspot-group" [class.active]="activeZone().id === 'piernas'" (click)="selectZone('piernas')" role="button" tabindex="0">
+                <circle cx="135" cy="320" r="16" class="hotspot-pulse" />
+                <circle cx="135" cy="320" r="8" class="hotspot-core" />
+                <circle cx="165" cy="320" r="16" class="hotspot-pulse" />
+                <circle cx="165" cy="320" r="8" class="hotspot-core" />
+                <text x="135" y="323" text-anchor="middle" class="hotspot-label-text">6</text>
+                <text x="165" y="323" text-anchor="middle" class="hotspot-label-text">6</text>
+              </g>
+            </svg>
+          </div>
+        }
       </div>
 
-      <!-- Recommendation Panel -->
+      <!-- Recommendation & Benefits Panel -->
       <div class="recommendation-card glass-card" aria-live="polite">
+        <!-- Layer Header Badge -->
         <div class="rec-header">
-          <span class="rec-eyebrow">Diagnóstico orientativo de bienestar</span>
-          <h3 class="rec-zone-title">Tensión en {{ activeZone().name }}</h3>
+          <div class="layer-pill-meta">
+            <app-icon [name]="activeMassageLayer().icon" [size]="14" customClass="text-botanical" />
+            <span>{{ activeMassageLayer().title }}</span>
+          </div>
+          <h3 class="rec-zone-title">
+            Enfoque en {{ activeZone().name }}
+          </h3>
+          <p class="rec-layer-desc">{{ activeMassageLayer().shortDesc }}</p>
         </div>
 
         <div class="rec-body-grid">
-          <!-- Symptoms -->
-          <div class="rec-item">
-            <div class="rec-item-label">
-              <app-icon name="activity" [size]="16" customClass="text-botanical" />
-              <span>Síntomas comunes</span>
+          <!-- Active 3D Point Specific Benefit -->
+          @if (activePoint(); as point) {
+            <div class="rec-point-spotlight">
+              <div class="spotlight-badge">
+                <span class="spotlight-num">{{ point.number }}</span>
+                <strong>{{ point.name }}</strong>
+              </div>
+              <div class="spotlight-content">
+                <div class="spotlight-field">
+                  <span class="field-label">Técnica manual de Danna:</span>
+                  <span class="field-val">{{ point.action }}</span>
+                </div>
+                <div class="spotlight-field">
+                  <span class="field-label">Beneficio terapéutico:</span>
+                  <span class="field-val highlight">{{ point.benefit }}</span>
+                </div>
+                <div class="spotlight-field">
+                  <span class="field-label">Sensación al recibir:</span>
+                  <span class="field-val italic">{{ point.sensation }}</span>
+                </div>
+              </div>
             </div>
-            <p class="rec-item-text">{{ activeZone().symptoms }}</p>
-          </div>
+          }
 
-          <!-- Causes -->
-          <div class="rec-item">
-            <div class="rec-item-label">
-              <app-icon name="compass" [size]="16" customClass="text-botanical" />
-              <span>Causa recurrente</span>
-            </div>
-            <p class="rec-item-text">{{ activeZone().causes }}</p>
+          <!-- Key Benefits of this Layer Map -->
+          <div class="layer-benefits-box">
+            <span class="benefits-header-label">
+              <app-icon name="check-circle" [size]="15" customClass="text-botanical" />
+              Beneficios comprobados de esta capa:
+            </span>
+            <ul class="benefits-bullets-list">
+              @for (benefit of activeMassageLayer().keyBenefits; track benefit) {
+                <li>
+                  <span class="bullet-dot"></span>
+                  <span>{{ benefit }}</span>
+                </li>
+              }
+            </ul>
           </div>
 
           <!-- Recommendation from Danna -->
@@ -282,7 +275,7 @@
               <strong>Tratamiento recomendado:</strong>
               <p>{{ activeZone().recommendation }}</p>
               <span class="treatment-service-tag">
-                Servicio sugerido: {{ activeZone().suggestedService }}
+                Servicio sugerido: {{ activeMassageLayer().recommendedService }}
               </span>
             </div>
           </div>
@@ -306,11 +299,11 @@
             class="btn-whatsapp rec-cta-btn"
           >
             <app-icon name="whatsapp" [size]="20" />
-            <span>Consultar mi caso por WhatsApp</span>
+            <span>Consultar este tratamiento por WhatsApp</span>
           </a>
 
           <p class="rec-disclaimer">
-            * Nota: Esta herramienta interactiva es puramente informativa con fines de bienestar y relajación. No constituye un diagnóstico médico clínico.
+            * Consulta terapéutica personalizada con Danna Castrillón. Atención en consultorio privado (La Soledad / Park Way) y a domicilio en Bogotá.
           </p>
         </div>
       </div>

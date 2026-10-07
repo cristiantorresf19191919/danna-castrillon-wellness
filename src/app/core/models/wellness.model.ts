@@ -67,3 +67,29 @@ export interface BenefitItem {
   description: string;
   detail: string;
 }
+
+export type MassageLayerType = 'muscular' | 'linfatico' | 'relajacion';
+
+export interface MassagePointInfo {
+  id: string;
+  name: string;
+  number: string;
+  zoneId: string;
+  location: string;
+  action: string;
+  benefit: string;
+  sensation: string;
+}
+
+export interface MassageMapLayer {
+  id: MassageLayerType;
+  title: string;
+  subtitle: string;
+  tag: string;
+  icon: string;
+  accentColor: string;
+  shortDesc: string;
+  keyBenefits: string[];
+  recommendedService: string;
+  points: MassagePointInfo[];
+}

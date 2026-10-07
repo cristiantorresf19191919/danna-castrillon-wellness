@@ -7,12 +7,12 @@
     <!-- Main Cinematic Booking Card -->
     <div class="booking-master-card">
       <div class="booking-grid">
-        <!-- Left Column: Emotional Editorial Story & Conversion Form -->
+        <!-- Left Column: Emotional Story & Interactive Booking Flow -->
         <div class="booking-content-col">
           <div class="booking-eyebrow">
             <span class="eyebrow-light">
               <span class="pulse-indicator"></span>
-              RESERVA DIRECTA POR WHATSAPP
+              RESERVA DIRECTA & CALENDARIO INTERACTIVO
             </span>
           </div>
 
@@ -22,10 +22,10 @@
           </h2>
 
           <p class="booking-lead">
-            Sentirte mejor puede empezar hoy. Regálale a tu cuerpo el cuidado que necesita con atención cálida, segura y personalizada de Danna Castrillón.
+            Elige tu tratamiento, fecha y horario favorito para reservar tu espacio con atención cálida, segura y personalizada de Danna Castrillón.
           </p>
 
-          <!-- Interactive Quick Appointment Selector -->
+          <!-- Interactive Booking Box with Calendar -->
           <div class="booking-planner-box">
             <!-- 1. Service Choice -->
             <div class="planner-field">
@@ -67,6 +67,152 @@
               </div>
             </div>
 
+            <!-- 3. Interactive Boutique Calendar -->
+            <div class="planner-field">
+              <div class="planner-label-row">
+                <label class="planner-label">
+                  <app-icon name="calendar" [size]="15" customClass="text-sage" />
+                  3. Selecciona tu fecha:
+                </label>
+                <span class="date-preview-badge">{{ formattedSelectedDate() }}</span>
+              </div>
+
+              <!-- Quick Selection Chips -->
+              <div class="quick-dates-row">
+                <button type="button" class="quick-chip" (click)="selectQuickDate('today')">Hoy</button>
+                <button type="button" class="quick-chip" (click)="selectQuickDate('tomorrow')">Mañana</button>
+                <button type="button" class="quick-chip" (click)="selectQuickDate('saturday')">Sábado</button>
+                <button type="button" class="quick-chip" (click)="selectQuickDate('nextWeek')">Próx. Semana</button>
+              </div>
+
+              <!-- Calendar Widget Card -->
+              <div class="calendar-widget-card">
+                <!-- Month Header Nav -->
+                <div class="cal-nav-bar">
+                  <button type="button" class="cal-nav-btn" (click)="prevMonth()" title="Mes anterior" aria-label="Mes anterior">
+                    <app-icon name="chevron-left" [size]="16" />
+                  </button>
+                  <span class="cal-month-title">{{ currentMonthLabel() }}</span>
+                  <button type="button" class="cal-nav-btn" (click)="nextMonth()" title="Mes siguiente" aria-label="Mes siguiente">
+                    <app-icon name="chevron-right" [size]="16" />
+                  </button>
+                </div>
+
+                <!-- Weekday Headers -->
+                <div class="cal-weekdays-row">
+                  @for (wd of weekDayNames; track wd) {
+                    <span class="cal-weekday-label">{{ wd }}</span>
+                  }
+                </div>
+
+                <!-- Days Grid -->
+                <div class="cal-days-grid" role="grid">
+                  @for (day of calendarDays(); track day.date.toISOString()) {
+                    <button
+                      type="button"
+                      class="cal-day-cell"
+                      [class.selected]="day.isSelected"
+                      [class.today]="day.isToday"
+                      [class.past]="day.isPast"
+                      [class.other-month]="!day.isCurrentMonth"
+                      [disabled]="day.isPast"
+                      (click)="selectDay(day)"
+                    >
+                      <span class="day-num">{{ day.dayNumber }}</span>
+                      @if (day.hasSlots) {
+                        <span class="slot-indicator"></span>
+                      }
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Time Slot Selection -->
+            <div class="planner-field">
+              <label class="planner-label">
+                <app-icon name="clock" [size]="15" customClass="text-sage" />
+                4. Elige tu franja horaria preferida:
+              </label>
+
+              <div class="time-slots-container">
+                <!-- Mañana -->
+                <div class="slot-group">
+                  <span class="slot-group-title">Mañana</span>
+                  <div class="slots-pill-row">
+                    @for (slot of timeSlotsMorning; track slot) {
+                      <button
+                        type="button"
+                        class="slot-btn"
+                        [class.active]="selectedTimeSlot() === slot"
+                        (click)="selectTimeSlot(slot)"
+                      >
+                        {{ slot }}
+                      </button>
+                    }
+                  </div>
+                </div>
+
+                <!-- Tarde -->
+                <div class="slot-group">
+                  <span class="slot-group-title">Tarde</span>
+                  <div class="slots-pill-row">
+                    @for (slot of timeSlotsAfternoon; track slot) {
+                      <button
+                        type="button"
+                        class="slot-btn"
+                        [class.active]="selectedTimeSlot() === slot"
+                        (click)="selectTimeSlot(slot)"
+                      >
+                        {{ slot }}
+                      </button>
+                    }
+                  </div>
+                </div>
+
+                <!-- Noche -->
+                <div class="slot-group">
+                  <span class="slot-group-title">Noche</span>
+                  <div class="slots-pill-row">
+                    @for (slot of timeSlotsEvening; track slot) {
+                      <button
+                        type="button"
+                        class="slot-btn"
+                        [class.active]="selectedTimeSlot() === slot"
+                        (click)="selectTimeSlot(slot)"
+                      >
+                        {{ slot }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. Live Summary Recap Card -->
+            <div class="booking-recap-box">
+              <div class="recap-header">
+                <span class="recap-label">
+                  <app-icon name="check-circle" [size]="14" customClass="text-sage" />
+                  Tu selección para agendar:
+                </span>
+              </div>
+              <div class="recap-grid">
+                <div class="recap-item">
+                  <span class="recap-k">Tratamiento:</span>
+                  <span class="recap-v highlight">{{ selectedService() }}</span>
+                </div>
+                <div class="recap-item">
+                  <span class="recap-k">Lugar:</span>
+                  <span class="recap-v">{{ selectedLocation() }}</span>
+                </div>
+                <div class="recap-item recap-full">
+                  <span class="recap-k">Fecha & Horario:</span>
+                  <span class="recap-v gold">{{ formattedSelectedDate() }} · {{ selectedTimeSlot() }}</span>
+                </div>
+              </div>
+            </div>
+
             <!-- WhatsApp Primary CTA Trigger -->
             <div class="planner-action-group">
               <a 
@@ -80,8 +226,8 @@
                   <app-icon name="whatsapp" [size]="24" />
                 </div>
                 <div class="whatsapp-cta-text">
-                  <span class="cta-primary-title">Agenda tu cita por WhatsApp</span>
-                  <span class="cta-phone-number">{{ phone }}</span>
+                  <span class="cta-primary-title">Confirmar cita por WhatsApp</span>
+                  <span class="cta-phone-number">{{ formattedSelectedDate() }} · {{ selectedTimeSlot() }}</span>
                 </div>
                 <app-icon name="arrow-right" [size]="20" customClass="cta-arrow" />
               </a>
@@ -89,11 +235,11 @@
               <div class="booking-reassurance-row">
                 <div class="reassurance-item">
                   <app-icon name="check-circle" [size]="15" customClass="text-sage" />
-                  <span>Respuesta rápida y directa de Danna</span>
+                  <span>Respuesta directa y personalizada de Danna</span>
                 </div>
                 <div class="reassurance-item">
                   <app-icon name="shield-check" [size]="15" customClass="text-sage" />
-                  <span>Sin pagos por adelantado</span>
+                  <span>Sin pagos anticipados obligatorios</span>
                 </div>
               </div>
             </div>

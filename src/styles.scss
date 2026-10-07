@@ -437,6 +437,67 @@ html.dark {
     border-color: var(--border-card) !important;
   }
 
+  .layer-tab-btn {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-subtle) !important;
+
+    .tab-icon-wrap {
+      background: var(--bg-surface-subtle) !important;
+      color: var(--color-forest) !important;
+    }
+
+    .tab-info .tab-title {
+      color: var(--color-forest) !important;
+    }
+
+    &.active {
+      background: #1e5c46 !important;
+      border-color: #66c2a5 !important;
+
+      .tab-icon-wrap {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+      }
+
+      .tab-info .tab-title {
+        color: #ffffff !important;
+      }
+      .tab-info .tab-sub {
+        color: #afc4a8 !important;
+      }
+    }
+  }
+
+  .rec-point-spotlight {
+    background: linear-gradient(135deg, var(--bg-surface-subtle) 0%, var(--bg-surface) 100%) !important;
+    border-color: var(--border-subtle) !important;
+
+    .spotlight-badge strong {
+      color: var(--color-forest) !important;
+    }
+
+    .spotlight-field .field-val {
+      color: var(--color-charcoal) !important;
+
+      &.highlight {
+        color: var(--color-botanical) !important;
+      }
+    }
+  }
+
+  .layer-benefits-box {
+    background-color: var(--color-warm-white) !important;
+    border-color: var(--border-subtle) !important;
+
+    .benefits-header-label {
+      color: var(--color-forest) !important;
+    }
+
+    .benefits-bullets-list li {
+      color: var(--color-charcoal-muted) !important;
+    }
+  }
+
   .rec-treatment-box {
     background: linear-gradient(135deg, var(--color-ivory) 0%, var(--bg-surface) 100%) !important;
     border-color: var(--border-card) !important;
