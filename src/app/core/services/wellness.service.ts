@@ -8,7 +8,10 @@ import {
   SocialPost,
   BenefitItem,
   MassageLayerType,
-  MassageMapLayer
+  MassageMapLayer,
+  TensionLevel,
+  TensionOption,
+  BodyVisualMode
 } from '../models/wellness.model';
 
 @Injectable({
@@ -425,6 +428,60 @@ export class WellnessService {
 
   selectMassageLayer(layerId: MassageLayerType): void {
     this.activeMassageLayerId.set(layerId);
+  }
+
+  // Tension Simulator Options
+  readonly tensionOptions = signal<TensionOption[]>([
+    {
+      id: 'leve',
+      label: 'Tensión Leve',
+      subtitle: 'Sobrecarga postural & fatiga diaria',
+      badge: 'Nivel 1 · Preventivo',
+      colorCss: '#10B981',
+      colorHex: 0x10b981,
+      pulseRate: 1.6,
+      sessionMin: '60 min',
+      recommendedService: 'Masaje Relajante & Descarga Suave',
+      manualTechnique: 'Pases neurosedantes continuos, fricción palmar tibia y elongación suave',
+      therapeuticNote: 'Ideal para resetear la fatiga acumulada de la semana y evitar que las contracturas se fijen.'
+    },
+    {
+      id: 'moderada',
+      label: 'Contractura Activa',
+      subtitle: 'Nudo palpable & rigidez localizada',
+      badge: 'Nivel 2 · Focalizado',
+      colorCss: '#E5A93C',
+      colorHex: 0xe5a93c,
+      pulseRate: 3.2,
+      sessionMin: '60 - 75 min',
+      recommendedService: 'Masaje Descontracturante Profundo',
+      manualTechnique: 'Presión isquémica progresiva sobre punto gatillo, fricción transversa profunda y calor local',
+      therapeuticNote: 'Disuelve la banda tensa muscular y restaura la oxigenación en el vientre muscular en 1 sesión.'
+    },
+    {
+      id: 'severa',
+      label: 'Dolor Agudo / Rigidez',
+      subtitle: 'Espasmo intenso & limitación articular',
+      badge: 'Nivel 3 · Terapéutico',
+      colorCss: '#EF4444',
+      colorHex: 0xef4444,
+      pulseRate: 5.2,
+      sessionMin: '75 - 90 min',
+      recommendedService: 'Terapia Física & Liberación Miofascial Integral',
+      manualTechnique: 'Descompresión articular, tracción axial, digitopresión controlada y reeducación biomecánica',
+      therapeuticNote: 'Protocolo clínico avanzado para desinflamar tejidos sobreexigidos y restablecer arcos de movilidad.'
+    }
+  ]);
+
+  readonly selectedTensionLevel = signal<TensionLevel>('moderada');
+
+  readonly activeTensionOption = computed(() => {
+    const cur = this.selectedTensionLevel();
+    return this.tensionOptions().find(t => t.id === cur) || this.tensionOptions()[1];
+  });
+
+  selectTensionLevel(level: TensionLevel): void {
+    this.selectedTensionLevel.set(level);
   }
 
   // Benefits / Why Choose Danna

@@ -93,3 +93,22 @@ export interface MassageMapLayer {
   recommendedService: string;
   points: MassagePointInfo[];
 }
+
+export type TensionLevel = 'leve' | 'moderada' | 'severa';
+
+export interface TensionOption {
+  id: TensionLevel;
+  label: string;
+  subtitle: string;
+  badge: string;
+  colorCss: string;
+  colorHex: number;
+  pulseRate: number;
+  sessionMin: string;
+  recommendedService: string;
+  manualTechnique: string;
+  therapeuticNote: string;
+}
+
+export type BodyVisualMode = 'ceramic' | 'hologram' | 'wireframe';
+

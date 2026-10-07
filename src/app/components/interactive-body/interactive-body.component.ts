@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { BodyCanvas3dComponent } from './body-canvas-3d/body-canvas-3d.component';
 import { WellnessService } from '../../core/services/wellness.service';
-import { BodyZone, MassageLayerType, MassagePointInfo } from '../../core/models/wellness.model';
+import { BodyZone, MassageLayerType, MassagePointInfo, TensionLevel } from '../../core/models/wellness.model';
 
 @Component({
   selector: 'app-interactive-body',
@@ -21,6 +21,10 @@ export class InteractiveBodyComponent {
   readonly activeZone = this.wellnessService.activeBodyZone;
   readonly massageLayers = this.wellnessService.massageLayers;
   readonly activeMassageLayer = this.wellnessService.activeMassageLayer;
+
+  readonly tensionOptions = this.wellnessService.tensionOptions;
+  readonly selectedTension = this.wellnessService.selectedTensionLevel;
+  readonly activeTensionOption = this.wellnessService.activeTensionOption;
 
   readonly viewMode = signal<'front' | 'back'>('back');
   readonly displayMode = signal<'3d' | '2d'>('3d');
@@ -42,6 +46,10 @@ export class InteractiveBodyComponent {
     this.bodyCanvas3d?.setLayer(layerId);
   }
 
+  selectTension(level: TensionLevel): void {
+    this.wellnessService.selectTensionLevel(level);
+  }
+
   setDisplayMode(mode: '3d' | '2d'): void {
     this.displayMode.set(mode);
   }
@@ -60,8 +68,9 @@ export class InteractiveBodyComponent {
   getWhatsAppBookingUrl(zone: BodyZone): string {
     const layer = this.activeMassageLayer();
     const point = this.activePoint();
+    const tension = this.activeTensionOption();
     const pointDetail = point ? ` (${point.name})` : '';
-    const msg = `Hola Danna 👋 Estuve explorando el mapa 3D de masajes. Me interesa un tratamiento enfocado en el *${layer.title}* para aliviar mi zona de *${zone.name}*${pointDetail}. ¿Qué horarios tienes disponibles para atenderme?`;
+    const msg = `Hola Danna 👋 Estuve explorando tu mapa anatómico 3D. Tengo molestia de nivel *${tension.label}* en *${zone.name}*${pointDetail} y me interesa una sesión de *${tension.recommendedService}* (${tension.sessionMin}). ¿Qué disponibilidad tienes para atenderme?`;
     return this.wellnessService.getWhatsAppUrl(msg);
   }
 }

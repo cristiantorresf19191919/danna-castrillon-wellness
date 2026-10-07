@@ -193,8 +193,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #ffffff;
-  border: 1px solid rgba(232, 221, 205, 0.8);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-subtle);
   position: relative;
 
@@ -394,8 +395,9 @@
 /* Recommendation Card */
 .recommendation-card {
   padding: 2.5rem;
-  background: #ffffff;
-  border: 1px solid rgba(232, 221, 205, 0.9);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-elevated);
   display: flex;
   flex-direction: column;
@@ -411,7 +413,7 @@
   flex-direction: column;
   gap: 0.45rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(232, 221, 205, 0.7);
+  border-bottom: 1px solid var(--border-subtle);
 
   .layer-pill-meta {
     display: inline-flex;
@@ -436,6 +438,176 @@
     font-size: 0.88rem;
     color: var(--color-charcoal-muted);
     line-height: 1.5;
+  }
+}
+
+/* Tension Simulator Box */
+.tension-simulator-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.15rem 1.25rem;
+  background: var(--bg-surface-subtle, rgba(247, 242, 232, 0.6));
+  border: 1px solid var(--border-subtle, rgba(232, 221, 205, 0.9));
+  border-radius: var(--radius-md);
+
+  .tension-sim-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .tension-sim-label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-forest);
+    }
+
+    .tension-badge-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.22rem 0.65rem;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+
+      &.badge-leve {
+        background: rgba(16, 185, 129, 0.15);
+        color: #065f46;
+        border: 1px solid rgba(16, 185, 129, 0.35);
+      }
+
+      &.badge-moderada {
+        background: rgba(229, 169, 60, 0.18);
+        color: #92400e;
+        border: 1px solid rgba(229, 169, 60, 0.4);
+      }
+
+      &.badge-severa {
+        background: rgba(239, 68, 68, 0.15);
+        color: #991b1b;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+      }
+    }
+  }
+
+  .tension-levels-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+
+    .tension-opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.7rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+
+      .tension-btn-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background-color: #cbd5e1;
+        transition: all 0.2s ease;
+      }
+
+      .tension-btn-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+
+        .tension-btn-title {
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: var(--color-charcoal);
+          line-height: 1.2;
+        }
+
+        .tension-btn-sub {
+          font-size: 0.67rem;
+          color: var(--color-charcoal-muted);
+        }
+      }
+
+      &:hover {
+        border-color: var(--color-sage);
+        transform: translateY(-1px);
+      }
+
+      &.opt-leve.active {
+        border-color: #10B981;
+        background: rgba(16, 185, 129, 0.1);
+
+        .tension-btn-dot {
+          background-color: #10B981;
+          box-shadow: 0 0 8px #10B981;
+        }
+
+        .tension-btn-title {
+          color: #047857;
+        }
+      }
+
+      &.opt-moderada.active {
+        border-color: #E5A93C;
+        background: rgba(229, 169, 60, 0.12);
+
+        .tension-btn-dot {
+          background-color: #E5A93C;
+          box-shadow: 0 0 8px #E5A93C;
+        }
+
+        .tension-btn-title {
+          color: #b45309;
+        }
+      }
+
+      &.opt-severa.active {
+        border-color: #EF4444;
+        background: rgba(239, 68, 68, 0.1);
+
+        .tension-btn-dot {
+          background-color: #EF4444;
+          box-shadow: 0 0 8px #EF4444;
+        }
+
+        .tension-btn-title {
+          color: #b91c1c;
+        }
+      }
+    }
+  }
+
+  .tension-detail-insight {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    padding-top: 0.25rem;
+
+    .insight-highlight {
+      font-weight: 700;
+      color: var(--color-forest);
+      margin-right: 0.3rem;
+    }
+
+    .insight-text {
+      color: var(--color-charcoal-muted);
+    }
   }
 }
 
@@ -590,15 +762,15 @@
   display: flex;
   gap: 1rem;
   padding: 1.25rem;
-  background: linear-gradient(135deg, var(--color-ivory) 0%, #ffffff 100%);
-  border: 1px solid rgba(175, 196, 168, 0.6);
+  background: linear-gradient(135deg, var(--bg-surface-subtle) 0%, var(--bg-surface) 100%);
+  border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
 
   .treatment-icon {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background-color: rgba(175, 196, 168, 0.3);
+    background-color: rgba(175, 196, 168, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -608,7 +780,8 @@
   .treatment-content {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.45rem;
+    flex: 1;
 
     strong {
       font-size: 0.92rem;
@@ -621,12 +794,36 @@
       color: var(--color-charcoal);
     }
 
-    .treatment-service-tag {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--color-botanical);
-      margin-top: 0.25rem;
+    .treatment-tags-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.85rem;
+      margin-top: 0.35rem;
+
+      .treatment-service-tag {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--color-botanical);
+        background: rgba(30, 92, 70, 0.08);
+        padding: 0.2rem 0.55rem;
+        border-radius: var(--radius-pill);
+      }
+
+      .treatment-duration-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.76rem;
+        font-weight: 600;
+        color: var(--color-charcoal-muted);
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        padding: 0.2rem 0.55rem;
+        border-radius: var(--radius-pill);
+      }
     }
   }
 }
@@ -636,8 +833,8 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.95rem 1.15rem;
-  background-color: var(--color-warm-white);
-  border: 1px solid rgba(232, 221, 205, 0.8);
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
 
   .tip-text {
@@ -662,7 +859,7 @@
   flex-direction: column;
   gap: 0.85rem;
   padding-top: 1.25rem;
-  border-top: 1px solid rgba(232, 221, 205, 0.7);
+  border-top: 1px solid var(--border-subtle);
 
   .rec-cta-btn {
     width: 100%;
@@ -674,5 +871,75 @@
     color: var(--color-charcoal-muted);
     line-height: 1.4;
     text-align: center;
+  }
+}
+
+/* ==========================================================================
+   Dark Theme Refinements
+   ========================================================================== */
+:host-context(html.dark) {
+  .tension-opt-btn {
+    background: var(--bg-surface);
+    border-color: var(--border-card);
+
+    &.opt-leve.active {
+      background: rgba(16, 185, 129, 0.2);
+      .tension-btn-title {
+        color: #34D399;
+      }
+      .tension-btn-sub {
+        color: #A7F3D0;
+      }
+    }
+
+    &.opt-moderada.active {
+      background: rgba(229, 169, 60, 0.22);
+      .tension-btn-title {
+        color: #FBBF24;
+      }
+      .tension-btn-sub {
+        color: #FDE68A;
+      }
+    }
+
+    &.opt-severa.active {
+      background: rgba(239, 68, 68, 0.2);
+      .tension-btn-title {
+        color: #F87171;
+      }
+      .tension-btn-sub {
+        color: #FECACA;
+      }
+    }
+  }
+
+  .tension-badge-pill {
+    &.badge-leve {
+      background: rgba(16, 185, 129, 0.22);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+    }
+    &.badge-moderada {
+      background: rgba(229, 169, 60, 0.25);
+      color: #FBBF24;
+      border: 1px solid rgba(229, 169, 60, 0.5);
+    }
+    &.badge-severa {
+      background: rgba(239, 68, 68, 0.22);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+    }
+  }
+
+  .treatment-tags-row {
+    .treatment-service-tag {
+      background: rgba(102, 194, 165, 0.2);
+      color: #66C2A5;
+    }
+    .treatment-duration-tag {
+      background: var(--bg-surface);
+      border-color: var(--border-card);
+      color: var(--color-charcoal-muted);
+    }
   }
 }

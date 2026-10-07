@@ -216,7 +216,10 @@
 
 .card-action {
   padding-top: 1rem;
-  border-top: 1px solid rgba(232, 221, 205, 0.6);
+  border-top: 1px solid var(--border-subtle, rgba(232, 221, 205, 0.6));
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
 
   .service-book-btn {
     display: flex;
@@ -243,6 +246,33 @@
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
+    }
+  }
+
+  .service-3d-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    width: 100%;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-card);
+    background: var(--bg-surface-subtle);
+    color: var(--color-forest);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    .sparkle-icon {
+      font-size: 0.85rem;
+    }
+
+    &:hover {
+      background: var(--color-sage-light);
+      border-color: var(--color-sage);
+      transform: translateY(-1px);
     }
   }
 }

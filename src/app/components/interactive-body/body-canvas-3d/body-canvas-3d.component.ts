@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { ThemeService } from '../../../core/services/theme.service';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
-import { MassageLayerType } from '../../../core/models/wellness.model';
+import { MassageLayerType, TensionLevel, BodyVisualMode } from '../../../core/models/wellness.model';
 
 interface HotspotPosition {
   pos: THREE.Vector3;
@@ -74,6 +74,40 @@ interface HotspotConfig {
           </button>
         </div>
 
+        <!-- Visual Render Mode Selector (Cerámico, Bio-Escáner, Malla) -->
+        <div class="modes-pill" role="group" aria-label="Modo de visualización 3D">
+          <button
+            type="button"
+            class="mode-btn"
+            [class.active]="visualMode() === 'ceramic'"
+            (click)="setVisualMode('ceramic')"
+            title="Modo Spa Cerámico Alabastro"
+          >
+            <span class="mode-icon">🏛️</span>
+            <span class="btn-text">Spa</span>
+          </button>
+          <button
+            type="button"
+            class="mode-btn"
+            [class.active]="visualMode() === 'hologram'"
+            (click)="setVisualMode('hologram')"
+            title="Modo Bio-Escáner Holográfico"
+          >
+            <span class="mode-icon">🌐</span>
+            <span class="btn-text">Bio-Escáner</span>
+          </button>
+          <button
+            type="button"
+            class="mode-btn"
+            [class.active]="visualMode() === 'wireframe'"
+            (click)="setVisualMode('wireframe')"
+            title="Modo Malla Miofascial"
+          >
+            <span class="mode-icon">🧬</span>
+            <span class="btn-text">Malla</span>
+          </button>
+        </div>
+
         <!-- Camera & View Actions -->
         <div class="actions-pill">
           <button
@@ -106,10 +140,37 @@ interface HotspotConfig {
           <button
             type="button"
             class="action-btn icon-only"
-            (click)="resetView()"
-            title="Restablecer orientación"
+            (click)="zoomIn()"
+            title="Acercar cámara (+)"
           >
-            <app-icon name="activity" [size]="13" />
+            <app-icon name="zoom-in" [size]="13" />
+          </button>
+          <button
+            type="button"
+            class="action-btn icon-only"
+            (click)="zoomOut()"
+            title="Alejar cámara (-)"
+          >
+            <app-icon name="zoom-out" [size]="13" />
+          </button>
+          <button
+            type="button"
+            class="action-btn icon-only"
+            [class.active]="isFocused()"
+            (click)="resetFraming()"
+            title="Vista de cuerpo entero"
+          >
+            <app-icon name="maximize-2" [size]="13" />
+          </button>
+          <!-- Audio Feedback Toggle Button -->
+          <button
+            type="button"
+            class="action-btn icon-only sound-toggle-btn"
+            [class.sound-on]="isSoundEnabled()"
+            (click)="toggleSound()"
+            [title]="isSoundEnabled() ? 'Silenciar sonido zen' : 'Activar sonido zen (chimes)'"
+          >
+            <app-icon [name]="isSoundEnabled() ? 'volume-2' : 'volume-x'" [size]="13" />
           </button>
         </div>
       </div>
@@ -117,8 +178,13 @@ interface HotspotConfig {
       <!-- Canvas Element -->
       <canvas #canvas3d class="three-canvas"></canvas>
 
-      <!-- Active Layer Legend Badge -->
-      <div class="layer-indicator-badge" [class.layer-muscular]="currentLayer() === 'muscular'" [class.layer-linfatico]="currentLayer() === 'linfatico'" [class.layer-relajacion]="currentLayer() === 'relajacion'">
+      <!-- Active Layer Legend Badge (Bottom Left) -->
+      <div 
+        class="layer-indicator-badge" 
+        [class.layer-muscular]="currentLayer() === 'muscular'" 
+        [class.layer-linfatico]="currentLayer() === 'linfatico'" 
+        [class.layer-relajacion]="currentLayer() === 'relajacion'"
+      >
         <span class="layer-dot"></span>
         @if (currentLayer() === 'muscular') {
           <span>Fibras Musculares & Puntos Gatillo</span>
@@ -128,6 +194,14 @@ interface HotspotConfig {
           <span>Puntos de Digitopresión & Calma Nerviosa</span>
         }
       </div>
+
+      <!-- Camera Focus Pill (Bottom Right) -->
+      @if (isFocused()) {
+        <div class="focus-indicator-pill" (click)="resetFraming()" role="button" tabindex="0">
+          <span class="focus-pulse"></span>
+          <span>Enfoque focalizado · Clic para ver cuerpo entero</span>
+        </div>
+      }
 
       <!-- Hover / Selected Floating Tooltip -->
       @if (hoveredZone()) {
@@ -145,7 +219,7 @@ interface HotspotConfig {
       <!-- Interactive User Guide Hint -->
       <div class="interaction-guide" [class.fade-out]="hasInteracted()">
         <span class="guide-hand">👆</span>
-        <span>Arrastra para rotar 3D · Toca los puntos numerados</span>
+        <span>Gira 360° · Toca cualquier músculo o punto</span>
       </div>
     </div>
   `,
@@ -155,11 +229,29 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
   @ViewChild('canvas3d', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('wrapper', { static: true }) wrapperRef!: ElementRef<HTMLDivElement>;
 
-  @Input() activeZoneId: string = 'cuello';
+  @Input() set activeZoneId(val: string) {
+    if (val && val !== this._activeZoneId) {
+      this._activeZoneId = val;
+      this.updateActiveHotspotVisuals(val);
+      this.focusOnZone(val);
+    }
+  }
+  get activeZoneId(): string {
+    return this._activeZoneId;
+  }
+  private _activeZoneId: string = 'cuello';
+
   @Input() set activeLayer(val: MassageLayerType) {
     if (val && val !== this.currentLayer()) {
       this.currentLayer.set(val);
       this.updateLayerVisuals(val);
+    }
+  }
+
+  @Input() set activeTension(val: TensionLevel) {
+    if (val && val !== this.currentTension()) {
+      this.currentTension.set(val);
+      this.updateTensionVisuals(val);
     }
   }
 
@@ -170,20 +262,46 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
   private readonly themeService = inject(ThemeService);
 
   readonly currentLayer = signal<MassageLayerType>('muscular');
+  readonly currentTension = signal<TensionLevel>('moderada');
+  readonly visualMode = signal<BodyVisualMode>('ceramic');
   readonly currentAngleView = signal<'front' | 'back'>('back');
   readonly isAutoRotating = signal<boolean>(false);
   readonly hasInteracted = signal<boolean>(false);
+  readonly isFocused = signal<boolean>(false);
+  readonly isSoundEnabled = signal<boolean>(false);
   readonly hoveredZone = signal<HotspotConfig | null>(null);
   readonly tooltipPos = signal<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Three.js instances
+  // Web Audio Context for Zen Tibetan Sound Chimes
+  private audioCtx: AudioContext | null = null;
+
+  // Three.js core instances
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private animationFrameId: number | null = null;
   private isVisible: boolean = true;
+  private initialRenderDone: boolean = false;
   private intersectionObserver?: IntersectionObserver;
   private resizeObserver?: ResizeObserver;
+
+  // Camera glide targets
+  private readonly defaultCameraPos = new THREE.Vector3(0, 0.50, 5.15);
+  private readonly defaultLookAt = new THREE.Vector3(0, 0.48, 0);
+  private cameraTargetPos = new THREE.Vector3(0, 0.50, 5.15);
+  private cameraLookAtTarget = new THREE.Vector3(0, 0.48, 0);
+  private currentLookAt = new THREE.Vector3(0, 0.48, 0);
+
+  // 3D Camera framing coordinates per zone
+  private readonly cameraZoneFraming: Record<string, { pos: THREE.Vector3; lookAt: THREE.Vector3 }> = {
+    all: { pos: new THREE.Vector3(0, 0.50, 5.15), lookAt: new THREE.Vector3(0, 0.48, 0) },
+    cuello: { pos: new THREE.Vector3(0, 1.70, 2.75), lookAt: new THREE.Vector3(0, 1.72, 0) },
+    hombros: { pos: new THREE.Vector3(0, 1.48, 2.85), lookAt: new THREE.Vector3(0, 1.48, 0) },
+    'espalda-alta': { pos: new THREE.Vector3(0, 1.34, 3.00), lookAt: new THREE.Vector3(0, 1.34, 0) },
+    'espalda-baja': { pos: new THREE.Vector3(0, 0.88, 3.10), lookAt: new THREE.Vector3(0, 0.88, 0) },
+    'brazos-manos': { pos: new THREE.Vector3(0, 0.70, 3.25), lookAt: new THREE.Vector3(0, 0.68, 0) },
+    piernas: { pos: new THREE.Vector3(0, -0.25, 3.40), lookAt: new THREE.Vector3(0, -0.30, 0) }
+  };
 
   // 3D Scene Groups
   private bodyGroup!: THREE.Group;
@@ -196,6 +314,9 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
   private lymphParticles!: THREE.Points;
   private lymphPositions!: Float32Array;
 
+  // Hologram scanner mesh
+  private scannerRing!: THREE.Mesh;
+
   // Dynamic Lights
   private activeZoneLight!: THREE.PointLight;
   private ambientLight!: THREE.AmbientLight;
@@ -203,7 +324,9 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
   private fillLight!: THREE.DirectionalLight;
 
   // Materials to track for theme & layer updates
-  private bodyMaterial!: THREE.MeshPhysicalMaterial;
+  private bodyMaterialCeramic!: THREE.MeshPhysicalMaterial;
+  private bodyMaterialHologram!: THREE.MeshStandardMaterial;
+  private bodyMaterialWireframe!: THREE.MeshStandardMaterial;
   private spineMaterial!: THREE.MeshStandardMaterial;
   private muscleMaterial!: THREE.MeshStandardMaterial;
   private lymphVesselMaterial!: THREE.MeshStandardMaterial;
@@ -216,6 +339,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
   private isDragging: boolean = false;
   private previousPointerPosition = { x: 0, y: 0 };
   private pointerDownPos = { x: 0, y: 0 };
+  private touchStartDist = 0;
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2(-999, -999);
   private lastInteractionTime: number = Date.now();
@@ -334,17 +458,114 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     this.currentLayer.set(layer);
     this.layerChange.emit(layer);
     this.updateLayerVisuals(layer);
+    this.playZenTone(layer === 'muscular' ? 528 : layer === 'linfatico' ? 639 : 432);
+  }
+
+  setVisualMode(mode: BodyVisualMode): void {
+    this.visualMode.set(mode);
+    this.updateVisualMode(mode);
+    this.playZenTone(mode === 'hologram' ? 741 : mode === 'wireframe' ? 660 : 528);
+  }
+
+  zoomIn(): void {
+    this.hasInteracted.set(true);
+    this.cameraTargetPos.z = Math.max(2.1, this.cameraTargetPos.z - 0.5);
+    this.isFocused.set(true);
+    this.playZenTone(660);
+  }
+
+  zoomOut(): void {
+    this.hasInteracted.set(true);
+    this.cameraTargetPos.z = Math.min(6.2, this.cameraTargetPos.z + 0.5);
+    this.playZenTone(440);
+  }
+
+  resetFraming(): void {
+    this.hasInteracted.set(true);
+    this.cameraTargetPos.copy(this.defaultCameraPos);
+    this.cameraLookAtTarget.copy(this.defaultLookAt);
+    this.isFocused.set(false);
+    this.playZenTone(528);
+  }
+
+  toggleSound(): void {
+    this.isSoundEnabled.update(v => !v);
+    if (this.isSoundEnabled()) {
+      this.playZenTone(528);
+    }
+  }
+
+  playZenTone(freq = 528): void {
+    if (!this.isSoundEnabled() || typeof window === 'undefined') return;
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!this.audioCtx) {
+        this.audioCtx = new AudioCtx();
+      }
+      if (this.audioCtx.state === 'suspended') {
+        this.audioCtx.resume();
+      }
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.001, this.audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.05, this.audioCtx.currentTime + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + 1.1);
+
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.start();
+      osc.stop(this.audioCtx.currentTime + 1.15);
+    } catch {
+      // Audio autoplay policy
+    }
+  }
+
+  private focusOnZone(zoneId: string): void {
+    const framing = this.cameraZoneFraming[zoneId];
+    if (framing) {
+      this.cameraTargetPos.set(framing.pos.x, framing.pos.y, framing.pos.z);
+      this.cameraLookAtTarget.set(framing.lookAt.x, framing.lookAt.y, framing.lookAt.z);
+      this.isFocused.set(true);
+
+      const config = this.hotspotsData.find(h => h.id === zoneId);
+      if (config) {
+        this.targetRotationY = config.preferredView === 'front' ? 0 : Math.PI;
+      }
+    }
+  }
+
+  private updateVisualMode(mode: BodyVisualMode): void {
+    if (!this.bodyMeshGroup) return;
+
+    let targetMat: THREE.Material = this.bodyMaterialCeramic;
+    if (mode === 'hologram') {
+      targetMat = this.bodyMaterialHologram;
+    } else if (mode === 'wireframe') {
+      targetMat = this.bodyMaterialWireframe;
+    }
+
+    this.bodyMeshGroup.children.forEach(child => {
+      if (child instanceof THREE.Mesh && child !== this.scannerRing) {
+        child.material = targetMat;
+      }
+    });
+
+    if (this.scannerRing) {
+      this.scannerRing.visible = mode === 'hologram';
+    }
   }
 
   private updateLayerVisuals(layer: MassageLayerType): void {
     if (!this.muscularGroup || !this.lymphaticGroup || !this.relaxationGroup) return;
 
-    // Smooth visibility transitions
     this.muscularGroup.visible = layer === 'muscular';
     this.lymphaticGroup.visible = layer === 'linfatico';
     this.relaxationGroup.visible = layer === 'relajacion';
 
-    // Tone dynamic lights according to layer
     if (this.activeZoneLight) {
       if (layer === 'muscular') {
         this.activeZoneLight.color.setHex(0xe5a93c);
@@ -358,23 +579,57 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Update hotspots color scheme according to active layer
     this.updateHotspotColors(layer);
+  }
+
+  private updateTensionVisuals(tension: TensionLevel): void {
+    let colorHex = 0xe5a93c;
+    let emissiveHex = 0xb45309;
+
+    if (tension === 'leve') {
+      colorHex = 0x10b981;
+      emissiveHex = 0x059669;
+    } else if (tension === 'severa') {
+      colorHex = 0xef4444;
+      emissiveHex = 0xdc2626;
+    }
+
+    if (this.activeZoneLight) {
+      this.activeZoneLight.color.setHex(colorHex);
+      this.activeZoneLight.intensity = tension === 'severa' ? 3.4 : tension === 'leve' ? 2.0 : 2.8;
+    }
+
+    this.hotspotMeshes.forEach(h => {
+      if (h.config.id === this.activeZoneId) {
+        const mat = h.coreMesh.material as THREE.MeshStandardMaterial;
+        mat.color.setHex(colorHex);
+        mat.emissive.setHex(emissiveHex);
+        mat.emissiveIntensity = tension === 'severa' ? 2.6 : 2.0;
+      }
+    });
   }
 
   private updateHotspotColors(layer: MassageLayerType): void {
     let coreColor = 0x1e5c46;
     let emissiveColor = 0x2e6f58;
 
-    if (layer === 'muscular') {
-      coreColor = 0xd97706;
-      emissiveColor = 0xb45309;
-    } else if (layer === 'linfatico') {
-      coreColor = 0x0d9488;
-      emissiveColor = 0x14b8a6;
+    if (this.currentTension() === 'severa') {
+      coreColor = 0xef4444;
+      emissiveColor = 0xdc2626;
+    } else if (this.currentTension() === 'leve') {
+      coreColor = 0x10b981;
+      emissiveColor = 0x059669;
     } else {
-      coreColor = 0x2563eb;
-      emissiveColor = 0x3b82f6;
+      if (layer === 'muscular') {
+        coreColor = 0xd97706;
+        emissiveColor = 0xb45309;
+      } else if (layer === 'linfatico') {
+        coreColor = 0x0d9488;
+        emissiveColor = 0x14b8a6;
+      } else {
+        coreColor = 0x2563eb;
+        emissiveColor = 0x3b82f6;
+      }
     }
 
     this.hotspotMeshes.forEach(h => {
@@ -382,7 +637,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       const mat = h.coreMesh.material as THREE.MeshStandardMaterial;
       mat.color.setHex(isSelected ? coreColor : 0x1e5c46);
       mat.emissive.setHex(isSelected ? emissiveColor : 0x0f2e23);
-      mat.emissiveIntensity = isSelected ? 2.0 : 0.8;
+      mat.emissiveIntensity = isSelected ? 2.2 : 0.8;
     });
   }
 
@@ -397,8 +652,8 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
 
     // 2. Camera
     this.camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 50);
-    this.camera.position.set(0, 0.50, 5.15);
-    this.camera.lookAt(0, 0.48, 0);
+    this.camera.position.copy(this.defaultCameraPos);
+    this.camera.lookAt(this.defaultLookAt);
 
     // 3. Renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -423,39 +678,45 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     this.buildLymphaticLayer();
     this.buildRelaxationLayer();
 
-    // 7. Build Interactive Hotspots
+    // 7. Build Holographic Laser Scanner
+    this.buildScannerMesh();
+
+    // 8. Build Interactive Hotspots
     this.buildHotspots();
 
-    // 8. Ambient Spa Particles
+    // 9. Ambient Spa Particles
     this.buildParticles();
 
-    // 9. Ground Soft Aura Disc
+    // 10. Ground Soft Aura Disc
     this.buildGroundAura();
 
-    // 10. Initial Layer State & Theme
+    // 11. Initial Layer State & Theme
     this.bodyGroup.rotation.y = this.targetRotationY;
     this.updateLayerVisuals(this.currentLayer());
     this.updateThemeMaterials(this.themeService.isDark());
+    this.updateVisualMode(this.visualMode());
 
-    // 11. Listeners and Loop
+    // 12. Listeners and Loop
     this.setupEventListeners();
     this.setupObservers();
+    this.focusOnZone(this._activeZoneId);
+    this.renderer.render(this.scene, this.camera);
     this.animate();
   }
 
   private setupLights(): void {
-    this.ambientLight = new THREE.AmbientLight(0xf7f2e8, 0.9);
+    this.ambientLight = new THREE.AmbientLight(0xf7f2e8, 0.95);
     this.scene.add(this.ambientLight);
 
-    this.keyLight = new THREE.DirectionalLight(0xfffaee, 1.8);
+    this.keyLight = new THREE.DirectionalLight(0xfffaee, 1.85);
     this.keyLight.position.set(2.8, 3.5, 3.2);
     this.scene.add(this.keyLight);
 
-    this.fillLight = new THREE.DirectionalLight(0xafc4a8, 1.3);
+    this.fillLight = new THREE.DirectionalLight(0xafc4a8, 1.35);
     this.fillLight.position.set(-2.6, 2.0, -2.6);
     this.scene.add(this.fillLight);
 
-    this.activeZoneLight = new THREE.PointLight(0xe5a93c, 2.8, 2.6);
+    this.activeZoneLight = new THREE.PointLight(0xe5a93c, 2.8, 2.8);
     this.activeZoneLight.position.set(0, 1.5, -0.5);
     this.scene.add(this.activeZoneLight);
   }
@@ -466,133 +727,179 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
 
     const isDark = this.themeService.isDark();
 
-    this.bodyMaterial = new THREE.MeshPhysicalMaterial({
+    // 1. Ceramic Porcelain Material
+    this.bodyMaterialCeramic = new THREE.MeshPhysicalMaterial({
       color: isDark ? 0x143329 : 0xf2ece1,
       roughness: 0.35,
       metalness: 0.05,
-      clearcoat: 0.75,
+      clearcoat: 0.8,
       clearcoatRoughness: 0.15,
       reflectivity: 0.5
     });
 
-    // Head
+    // 2. Holographic Bio-Scanner Material
+    this.bodyMaterialHologram = new THREE.MeshStandardMaterial({
+      color: 0x0d9488,
+      roughness: 0.15,
+      metalness: 0.8,
+      emissive: 0x14b8a6,
+      emissiveIntensity: 0.55,
+      transparent: true,
+      opacity: 0.68
+    });
+
+    // 3. Wireframe Miofascial Material
+    this.bodyMaterialWireframe = new THREE.MeshStandardMaterial({
+      color: isDark ? 0x2dd4bf : 0x123c32,
+      wireframe: true,
+      roughness: 0.3
+    });
+
+    const activeMat = this.bodyMaterialCeramic;
+
+    // Helper to register anatomical zone raycasting
+    const attachMesh = (mesh: THREE.Mesh, zoneId: string) => {
+      mesh.userData = { bodyZoneId: zoneId };
+      this.bodyMeshGroup.add(mesh);
+      return mesh;
+    };
+
+    // Head & Occiput
     const headGeo = new THREE.SphereGeometry(0.27, 32, 24);
     headGeo.scale(0.88, 1.15, 0.94);
-    const headMesh = new THREE.Mesh(headGeo, this.bodyMaterial);
+    const headMesh = new THREE.Mesh(headGeo, activeMat);
     headMesh.position.set(0, 1.95, 0);
-    this.bodyMeshGroup.add(headMesh);
+    attachMesh(headMesh, 'cuello');
 
-    // Neck
+    // Neck & Cervicales
     const neckGeo = new THREE.CylinderGeometry(0.12, 0.16, 0.28, 24);
-    const neckMesh = new THREE.Mesh(neckGeo, this.bodyMaterial);
+    const neckMesh = new THREE.Mesh(neckGeo, activeMat);
     neckMesh.position.set(0, 1.68, 0);
-    this.bodyMeshGroup.add(neckMesh);
+    attachMesh(neckMesh, 'cuello');
 
-    // Chest & Scapula
+    // Chest & Thorax
     const chestGeo = new THREE.CylinderGeometry(0.40, 0.33, 0.44, 32);
     chestGeo.scale(1.18, 1.0, 0.72);
-    const chestMesh = new THREE.Mesh(chestGeo, this.bodyMaterial);
+    const chestMesh = new THREE.Mesh(chestGeo, activeMat);
     chestMesh.position.set(0, 1.35, 0);
-    this.bodyMeshGroup.add(chestMesh);
+    attachMesh(chestMesh, 'espalda-alta');
 
-    // Shoulder arch
+    // Shoulder arch & Clavicles
     const shoulderArchGeo = new THREE.SphereGeometry(0.36, 24, 16);
     shoulderArchGeo.scale(1.22, 0.45, 0.7);
-    const shoulderArchMesh = new THREE.Mesh(shoulderArchGeo, this.bodyMaterial);
+    const shoulderArchMesh = new THREE.Mesh(shoulderArchGeo, activeMat);
     shoulderArchMesh.position.set(0, 1.48, 0);
-    this.bodyMeshGroup.add(shoulderArchMesh);
+    attachMesh(shoulderArchMesh, 'hombros');
 
     // Waist / Core
     const waistGeo = new THREE.CylinderGeometry(0.33, 0.31, 0.34, 32);
     waistGeo.scale(1.02, 1.0, 0.68);
-    const waistMesh = new THREE.Mesh(waistGeo, this.bodyMaterial);
+    const waistMesh = new THREE.Mesh(waistGeo, activeMat);
     waistMesh.position.set(0, 0.98, 0);
-    this.bodyMeshGroup.add(waistMesh);
+    attachMesh(waistMesh, 'espalda-baja');
 
     // Hips / Pelvis
     const hipsGeo = new THREE.CylinderGeometry(0.31, 0.36, 0.36, 32);
     hipsGeo.scale(1.12, 1.0, 0.74);
-    const hipsMesh = new THREE.Mesh(hipsGeo, this.bodyMaterial);
+    const hipsMesh = new THREE.Mesh(hipsGeo, activeMat);
     hipsMesh.position.set(0, 0.65, 0);
-    this.bodyMeshGroup.add(hipsMesh);
+    attachMesh(hipsMesh, 'espalda-baja');
 
     // Deltoids
     const shoulderGeo = new THREE.SphereGeometry(0.135, 20, 20);
-    const leftShoulder = new THREE.Mesh(shoulderGeo, this.bodyMaterial);
+    const leftShoulder = new THREE.Mesh(shoulderGeo, activeMat);
     leftShoulder.position.set(-0.46, 1.48, 0);
-    const rightShoulder = new THREE.Mesh(shoulderGeo, this.bodyMaterial);
+    attachMesh(leftShoulder, 'hombros');
+
+    const rightShoulder = new THREE.Mesh(shoulderGeo, activeMat);
     rightShoulder.position.set(0.46, 1.48, 0);
-    this.bodyMeshGroup.add(leftShoulder, rightShoulder);
+    attachMesh(rightShoulder, 'hombros');
 
     // Upper Arms
     const upperArmGeo = new THREE.CylinderGeometry(0.085, 0.07, 0.42, 20);
-    const leftUpperArm = new THREE.Mesh(upperArmGeo, this.bodyMaterial);
+    const leftUpperArm = new THREE.Mesh(upperArmGeo, activeMat);
     leftUpperArm.position.set(-0.50, 1.20, 0);
     leftUpperArm.rotation.z = 0.15;
-    const rightUpperArm = new THREE.Mesh(upperArmGeo, this.bodyMaterial);
+    attachMesh(leftUpperArm, 'brazos-manos');
+
+    const rightUpperArm = new THREE.Mesh(upperArmGeo, activeMat);
     rightUpperArm.position.set(0.50, 1.20, 0);
     rightUpperArm.rotation.z = -0.15;
-    this.bodyMeshGroup.add(leftUpperArm, rightUpperArm);
+    attachMesh(rightUpperArm, 'brazos-manos');
 
     // Elbows
     const elbowGeo = new THREE.SphereGeometry(0.075, 16, 16);
-    const leftElbow = new THREE.Mesh(elbowGeo, this.bodyMaterial);
+    const leftElbow = new THREE.Mesh(elbowGeo, activeMat);
     leftElbow.position.set(-0.54, 0.95, 0);
-    const rightElbow = new THREE.Mesh(elbowGeo, this.bodyMaterial);
+    attachMesh(leftElbow, 'brazos-manos');
+
+    const rightElbow = new THREE.Mesh(elbowGeo, activeMat);
     rightElbow.position.set(0.54, 0.95, 0);
-    this.bodyMeshGroup.add(leftElbow, rightElbow);
+    attachMesh(rightElbow, 'brazos-manos');
 
     // Forearms
     const forearmGeo = new THREE.CylinderGeometry(0.07, 0.055, 0.38, 20);
-    const leftForearm = new THREE.Mesh(forearmGeo, this.bodyMaterial);
+    const leftForearm = new THREE.Mesh(forearmGeo, activeMat);
     leftForearm.position.set(-0.57, 0.72, 0.03);
     leftForearm.rotation.z = 0.10;
-    const rightForearm = new THREE.Mesh(forearmGeo, this.bodyMaterial);
+    attachMesh(leftForearm, 'brazos-manos');
+
+    const rightForearm = new THREE.Mesh(forearmGeo, activeMat);
     rightForearm.position.set(0.57, 0.72, 0.03);
     rightForearm.rotation.z = -0.10;
-    this.bodyMeshGroup.add(leftForearm, rightForearm);
+    attachMesh(rightForearm, 'brazos-manos');
 
     // Hands
     const handGeo = new THREE.SphereGeometry(0.055, 16, 16);
     handGeo.scale(0.7, 1.4, 0.5);
-    const leftHand = new THREE.Mesh(handGeo, this.bodyMaterial);
+    const leftHand = new THREE.Mesh(handGeo, activeMat);
     leftHand.position.set(-0.60, 0.48, 0.05);
-    const rightHand = new THREE.Mesh(handGeo, this.bodyMaterial);
+    attachMesh(leftHand, 'brazos-manos');
+
+    const rightHand = new THREE.Mesh(handGeo, activeMat);
     rightHand.position.set(0.60, 0.48, 0.05);
-    this.bodyMeshGroup.add(leftHand, rightHand);
+    attachMesh(rightHand, 'brazos-manos');
 
     // Thighs
     const thighGeo = new THREE.CylinderGeometry(0.135, 0.095, 0.58, 24);
-    const leftThigh = new THREE.Mesh(thighGeo, this.bodyMaterial);
+    const leftThigh = new THREE.Mesh(thighGeo, activeMat);
     leftThigh.position.set(-0.18, 0.22, 0);
-    const rightThigh = new THREE.Mesh(thighGeo, this.bodyMaterial);
+    attachMesh(leftThigh, 'piernas');
+
+    const rightThigh = new THREE.Mesh(thighGeo, activeMat);
     rightThigh.position.set(0.18, 0.22, 0);
-    this.bodyMeshGroup.add(leftThigh, rightThigh);
+    attachMesh(rightThigh, 'piernas');
 
     // Knees
     const kneeGeo = new THREE.SphereGeometry(0.095, 20, 20);
-    const leftKnee = new THREE.Mesh(kneeGeo, this.bodyMaterial);
+    const leftKnee = new THREE.Mesh(kneeGeo, activeMat);
     leftKnee.position.set(-0.18, -0.12, 0.02);
-    const rightKnee = new THREE.Mesh(kneeGeo, this.bodyMaterial);
+    attachMesh(leftKnee, 'piernas');
+
+    const rightKnee = new THREE.Mesh(kneeGeo, activeMat);
     rightKnee.position.set(0.18, -0.12, 0.02);
-    this.bodyMeshGroup.add(leftKnee, rightKnee);
+    attachMesh(rightKnee, 'piernas');
 
     // Calves
     const calfGeo = new THREE.CylinderGeometry(0.095, 0.065, 0.56, 24);
-    const leftCalf = new THREE.Mesh(calfGeo, this.bodyMaterial);
+    const leftCalf = new THREE.Mesh(calfGeo, activeMat);
     leftCalf.position.set(-0.18, -0.48, 0);
-    const rightCalf = new THREE.Mesh(calfGeo, this.bodyMaterial);
+    attachMesh(leftCalf, 'piernas');
+
+    const rightCalf = new THREE.Mesh(calfGeo, activeMat);
     rightCalf.position.set(0.18, -0.48, 0);
-    this.bodyMeshGroup.add(leftCalf, rightCalf);
+    attachMesh(rightCalf, 'piernas');
 
     // Feet
     const footGeo = new THREE.SphereGeometry(0.07, 16, 16);
     footGeo.scale(0.8, 0.6, 1.7);
-    const leftFoot = new THREE.Mesh(footGeo, this.bodyMaterial);
+    const leftFoot = new THREE.Mesh(footGeo, activeMat);
     leftFoot.position.set(-0.18, -0.82, 0.06);
-    const rightFoot = new THREE.Mesh(footGeo, this.bodyMaterial);
+    attachMesh(leftFoot, 'piernas');
+
+    const rightFoot = new THREE.Mesh(footGeo, activeMat);
     rightFoot.position.set(0.18, -0.82, 0.06);
-    this.bodyMeshGroup.add(leftFoot, rightFoot);
+    attachMesh(rightFoot, 'piernas');
 
     // Physiological Spine Discs
     this.spineMaterial = new THREE.MeshStandardMaterial({
@@ -612,11 +919,26 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       const curve = Math.sin(t * Math.PI) * 0.04;
       const z = -0.16 - curve;
       disc.position.set(0, y, z);
+      disc.userData = { bodyZoneId: y > 1.4 ? 'espalda-alta' : 'espalda-baja' };
       this.bodyMeshGroup.add(disc);
     }
 
     this.bodyGroup.add(this.bodyMeshGroup);
     this.scene.add(this.bodyGroup);
+  }
+
+  private buildScannerMesh(): void {
+    const ringGeo = new THREE.TorusGeometry(0.55, 0.015, 16, 48);
+    ringGeo.rotateX(Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0x2dd4bf,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending
+    });
+    this.scannerRing = new THREE.Mesh(ringGeo, ringMat);
+    this.scannerRing.visible = false;
+    this.bodyGroup.add(this.scannerRing);
   }
 
   /* -------------------------------------------------------------
@@ -635,14 +957,13 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       opacity: 0.85
     });
 
-    // Helper to build curved muscle fiber band
     const createFiberBand = (points: THREE.Vector3[], radius = 0.024) => {
       const curve = new THREE.CatmullRomCurve3(points);
       const tubeGeo = new THREE.TubeGeometry(curve, 18, radius, 8, false);
       return new THREE.Mesh(tubeGeo, this.muscleMaterial);
     };
 
-    // Trapezius Bands (Descending fibers from neck to scapula)
+    // Trapezius Bands
     const leftTrap = createFiberBand([
       new THREE.Vector3(-0.06, 1.75, -0.12),
       new THREE.Vector3(-0.25, 1.60, -0.10),
@@ -656,7 +977,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     ], 0.032);
     this.muscularGroup.add(leftTrap, rightTrap);
 
-    // Scapular & Rhomboid Fibers (Across upper back)
+    // Scapular & Rhomboid Fibers
     const leftRhomboid = createFiberBand([
       new THREE.Vector3(-0.05, 1.44, -0.22),
       new THREE.Vector3(-0.22, 1.40, -0.18),
@@ -670,7 +991,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     ], 0.026);
     this.muscularGroup.add(leftRhomboid, rightRhomboid);
 
-    // Paravertebral Spinal Muscle Columns (Longissimus dorsi)
+    // Paravertebral Spinal Muscle Columns
     const leftSpineMuscle = createFiberBand([
       new THREE.Vector3(-0.08, 1.55, -0.20),
       new THREE.Vector3(-0.08, 1.25, -0.22),
@@ -754,7 +1075,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       return node;
     };
 
-    // 1. Thoracic Main Duct (Columna de drenaje central)
+    // 1. Thoracic Main Duct
     const thoracicDuct = createVessel([
       new THREE.Vector3(0, 0.72, 0.02),
       new THREE.Vector3(0.04, 1.05, 0.03),
@@ -763,7 +1084,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     ], 0.02);
     this.lymphaticGroup.add(thoracicDuct);
 
-    // 2. Cervical Lymph Chains (Cuello a Clavículas - Terminus)
+    // 2. Cervical Lymph Chains
     const leftCervical = createVessel([
       new THREE.Vector3(-0.08, 1.85, 0.08),
       new THREE.Vector3(-0.12, 1.72, 0.10),
@@ -776,7 +1097,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     ]);
     this.lymphaticGroup.add(leftCervical, rightCervical);
 
-    // 3. Axillary Channels (Brazos a Axilas)
+    // 3. Axillary Channels
     const leftArmVessel = createVessel([
       new THREE.Vector3(-0.58, 0.55, 0.06),
       new THREE.Vector3(-0.55, 0.85, 0.04),
@@ -791,7 +1112,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     ]);
     this.lymphaticGroup.add(leftArmVessel, rightArmVessel);
 
-    // 4. Inguinal to Legs (Canales ilíacos a extremidades)
+    // 4. Inguinal to Legs
     const leftLegVessel = createVessel([
       new THREE.Vector3(-0.18, -0.75, 0.06),
       new THREE.Vector3(-0.17, -0.42, 0.07),
@@ -808,24 +1129,24 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     ]);
     this.lymphaticGroup.add(leftLegVessel, rightLegVessel);
 
-    // Lymph Nodes (Ganglios clave)
+    // Lymph Nodes
     const nodes = [
-      new THREE.Vector3(-0.16, 1.62, 0.08),  // Cervical Terminus Izq
-      new THREE.Vector3(0.16, 1.62, 0.08),   // Cervical Terminus Der
-      new THREE.Vector3(-0.36, 1.42, 0.02),  // Axilar Izq
-      new THREE.Vector3(0.36, 1.42, 0.02),   // Axilar Der
-      new THREE.Vector3(0.01, 0.85, 0.04),   // Cisterna de Pecquet
-      new THREE.Vector3(-0.15, 0.58, 0.06),  // Inguinal Izq
-      new THREE.Vector3(0.15, 0.58, 0.06),   // Inguinal Der
-      new THREE.Vector3(-0.18, -0.12, -0.06),// Poplíteo Izq
-      new THREE.Vector3(0.18, -0.12, -0.06)  // Poplíteo Der
+      new THREE.Vector3(-0.16, 1.62, 0.08),
+      new THREE.Vector3(0.16, 1.62, 0.08),
+      new THREE.Vector3(-0.36, 1.42, 0.02),
+      new THREE.Vector3(0.36, 1.42, 0.02),
+      new THREE.Vector3(0.01, 0.85, 0.04),
+      new THREE.Vector3(-0.15, 0.58, 0.06),
+      new THREE.Vector3(0.15, 0.58, 0.06),
+      new THREE.Vector3(-0.18, -0.12, -0.06),
+      new THREE.Vector3(0.18, -0.12, -0.06)
     ];
 
     nodes.forEach(pos => {
       this.lymphaticGroup.add(createNodeCluster(pos));
     });
 
-    // Flowing Lymph Particles (Moving upward through lymphatic ducts)
+    // Flowing Lymph Particles
     const pCount = 95;
     const pGeo = new THREE.BufferGeometry();
     this.lymphPositions = new Float32Array(pCount * 3);
@@ -866,15 +1187,14 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       side: THREE.DoubleSide
     });
 
-    // Relaxation Points with Expanding Calming Waves
     const relaxationPoints = [
-      new THREE.Vector3(0, 1.76, -0.18),    // Feng Chi (Occipital)
-      new THREE.Vector3(-0.42, 1.50, -0.02),// Jian Jing Izq
-      new THREE.Vector3(0.42, 1.50, -0.02), // Jian Jing Der
-      new THREE.Vector3(0, 1.35, -0.22),    // Corazón dorsal
-      new THREE.Vector3(0, 0.88, -0.21),    // Mingmen lumbar
-      new THREE.Vector3(-0.18, -0.80, 0.04),// Yongquan Izq
-      new THREE.Vector3(0.18, -0.80, 0.04)  // Yongquan Der
+      new THREE.Vector3(0, 1.76, -0.18),
+      new THREE.Vector3(-0.42, 1.50, -0.02),
+      new THREE.Vector3(0.42, 1.50, -0.02),
+      new THREE.Vector3(0, 1.35, -0.22),
+      new THREE.Vector3(0, 0.88, -0.21),
+      new THREE.Vector3(-0.18, -0.80, 0.04),
+      new THREE.Vector3(0.18, -0.80, 0.04)
     ];
 
     relaxationPoints.forEach(pos => {
@@ -884,7 +1204,6 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       waveMesh.userData = { initialScale: 1.0, isWave: true };
       this.relaxationGroup.add(waveMesh);
 
-      // Lotus-like glowing center sphere
       const dotGeo = new THREE.SphereGeometry(0.045, 16, 16);
       const dotMat = new THREE.MeshStandardMaterial({
         color: 0xbfdbfe,
@@ -909,7 +1228,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
         nodeGroup.position.copy(nodeInfo.pos);
 
         // Invisible Raycasting Sphere
-        const hitGeo = new THREE.SphereGeometry(0.24, 12, 12);
+        const hitGeo = new THREE.SphereGeometry(0.25, 12, 12);
         const hitMat = new THREE.MeshBasicMaterial({ visible: false });
         const hitMesh = new THREE.Mesh(hitGeo, hitMat);
         hitMesh.userData = { config, zoneId: config.id };
@@ -1047,12 +1366,10 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     this.scene.add(auraMesh);
   }
 
-  // Active Hotspot visuals synchronization
   updateActiveHotspotVisuals(zoneId: string): void {
-    this.activeZoneId = zoneId;
+    this._activeZoneId = zoneId;
     this.updateHotspotColors(this.currentLayer());
 
-    // Locate active node and orient light
     const targetConfig = this.hotspotsData.find(h => h.id === zoneId);
     if (targetConfig && targetConfig.nodes.length > 0) {
       const pos = targetConfig.nodes[0].pos;
@@ -1062,7 +1379,6 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Camera Orientation controls
   rotateTo(side: 'back' | 'front'): void {
     this.currentAngleView.set(side);
     this.isAutoRotating.set(false);
@@ -1075,25 +1391,31 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     }
     this.targetRotationX = 0;
     this.viewModeChange.emit(side);
+    this.playZenTone(side === 'back' ? 528 : 587);
   }
 
   toggleAutoRotate(): void {
     this.isAutoRotating.update(v => !v);
     this.hasInteracted.set(true);
+    this.playZenTone(this.isAutoRotating() ? 660 : 440);
   }
 
   resetView(): void {
     this.rotateTo('back');
+    this.resetFraming();
   }
 
-  // Setup Observers & Listeners
   private setupObservers(): void {
     const wrapper = this.wrapperRef.nativeElement;
 
     if (typeof IntersectionObserver !== 'undefined') {
       this.intersectionObserver = new IntersectionObserver((entries) => {
+        const wasVisible = this.isVisible;
         this.isVisible = entries[0]?.isIntersecting ?? true;
-      }, { threshold: 0.1 });
+        if (!wasVisible && this.isVisible && this.renderer && this.scene && this.camera) {
+          this.renderer.render(this.scene, this.camera);
+        }
+      }, { threshold: 0.02, rootMargin: '250px' });
       this.intersectionObserver.observe(wrapper);
     }
 
@@ -1122,6 +1444,11 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     canvas.addEventListener('pointermove', this.onPointerMove);
     window.addEventListener('pointerup', this.onPointerUp);
     canvas.addEventListener('pointerleave', this.onPointerLeave);
+
+    // Native Touch Pinch-to-zoom for mobile
+    canvas.addEventListener('touchstart', this.onTouchStart, { passive: true });
+    canvas.addEventListener('touchmove', this.onTouchMove, { passive: false });
+    canvas.addEventListener('touchend', this.onTouchEnd, { passive: true });
   }
 
   private removeEventListeners(): void {
@@ -1130,9 +1457,37 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       canvas.removeEventListener('pointerdown', this.onPointerDown);
       canvas.removeEventListener('pointermove', this.onPointerMove);
       canvas.removeEventListener('pointerleave', this.onPointerLeave);
+      canvas.removeEventListener('touchstart', this.onTouchStart);
+      canvas.removeEventListener('touchmove', this.onTouchMove);
+      canvas.removeEventListener('touchend', this.onTouchEnd);
     }
     window.removeEventListener('pointerup', this.onPointerUp);
   }
+
+  private onTouchStart = (e: TouchEvent): void => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      this.touchStartDist = Math.hypot(dx, dy);
+    }
+  };
+
+  private onTouchMove = (e: TouchEvent): void => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const delta = dist - this.touchStartDist;
+      this.cameraTargetPos.z = Math.max(2.1, Math.min(6.2, this.cameraTargetPos.z - delta * 0.007));
+      this.touchStartDist = dist;
+      this.isFocused.set(true);
+    }
+  };
+
+  private onTouchEnd = (): void => {
+    this.touchStartDist = 0;
+  };
 
   private onPointerDown = (e: PointerEvent): void => {
     this.isDragging = true;
@@ -1159,7 +1514,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       this.isAutoRotating.set(false);
       this.lastInteractionTime = Date.now();
     } else {
-      this.checkRaycastHover(e);
+      this.handleRaycastInteraction(false, e);
     }
   };
 
@@ -1169,7 +1524,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
 
     const dist = Math.hypot(e.clientX - this.pointerDownPos.x, e.clientY - this.pointerDownPos.y);
     if (dist < 6) {
-      this.handleHotspotClick();
+      this.handleRaycastInteraction(true, e);
     }
   };
 
@@ -1177,51 +1532,80 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     this.hoveredZone.set(null);
   };
 
-  private checkRaycastHover(e: PointerEvent): void {
+  private handleRaycastInteraction(isClick: boolean, e: PointerEvent): void {
     if (!this.camera || !this.hotspotMeshes.length) return;
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    // 1. Check Primary Hotspot Targets
     const hitMeshes = this.hotspotMeshes.map(h => h.hitMesh);
-    const intersects = this.raycaster.intersectObjects(hitMeshes, false);
+    const hotspotIntersects = this.raycaster.intersectObjects(hitMeshes, false);
 
-    if (intersects.length > 0) {
-      const hit = intersects[0].object as THREE.Mesh;
+    if (hotspotIntersects.length > 0) {
+      const hit = hotspotIntersects[0].object as THREE.Mesh;
+      const zoneId = hit.userData['zoneId'] as string;
       const config = hit.userData['config'] as HotspotConfig;
-      this.hoveredZone.set(config);
 
-      const rect = this.wrapperRef.nativeElement.getBoundingClientRect();
-      this.tooltipPos.set({
-        x: Math.max(12, Math.min(rect.width - 12, e.clientX - rect.left)),
-        y: Math.max(20, e.clientY - rect.top - 18)
-      });
-    } else {
+      if (isClick) {
+        if (zoneId) {
+          this.zoneSelected.emit(zoneId);
+          this.updateActiveHotspotVisuals(zoneId);
+          this.focusOnZone(zoneId);
+          this.playZenTone(587);
+        }
+      } else {
+        this.hoveredZone.set(config);
+        const rect = this.wrapperRef.nativeElement.getBoundingClientRect();
+        this.tooltipPos.set({
+          x: Math.max(12, Math.min(rect.width - 12, e.clientX - rect.left)),
+          y: Math.max(20, e.clientY - rect.top - 18)
+        });
+      }
+      return;
+    }
+
+    // 2. Direct Body Mesh Raycasting (e.g. clicking on neck, shoulders, back, arms, legs directly)
+    if (this.bodyMeshGroup) {
+      const bodyChildren = this.bodyMeshGroup.children.filter(m => m.userData && m.userData['bodyZoneId']);
+      const bodyIntersects = this.raycaster.intersectObjects(bodyChildren, false);
+
+      if (bodyIntersects.length > 0) {
+        const hit = bodyIntersects[0].object as THREE.Mesh;
+        const zoneId = hit.userData['bodyZoneId'] as string;
+        const config = this.hotspotsData.find(h => h.id === zoneId);
+
+        if (isClick) {
+          if (zoneId) {
+            this.zoneSelected.emit(zoneId);
+            this.updateActiveHotspotVisuals(zoneId);
+            this.focusOnZone(zoneId);
+            this.playZenTone(528);
+          }
+        } else if (config) {
+          this.hoveredZone.set(config);
+          const rect = this.wrapperRef.nativeElement.getBoundingClientRect();
+          this.tooltipPos.set({
+            x: Math.max(12, Math.min(rect.width - 12, e.clientX - rect.left)),
+            y: Math.max(20, e.clientY - rect.top - 18)
+          });
+        }
+        return;
+      }
+    }
+
+    if (!isClick) {
       this.hoveredZone.set(null);
     }
   }
 
-  private handleHotspotClick(): void {
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-    const hitMeshes = this.hotspotMeshes.map(h => h.hitMesh);
-    const intersects = this.raycaster.intersectObjects(hitMeshes, false);
-
-    if (intersects.length > 0) {
-      const hit = intersects[0].object as THREE.Mesh;
-      const zoneId = hit.userData['zoneId'] as string;
-      if (zoneId) {
-        this.zoneSelected.emit(zoneId);
-        this.updateActiveHotspotVisuals(zoneId);
-      }
-    }
-  }
-
   private updateThemeMaterials(isDark: boolean): void {
-    if (!this.bodyMaterial) return;
+    if (!this.bodyMaterialCeramic) return;
 
     if (isDark) {
-      this.bodyMaterial.color.setHex(0x143329);
+      this.bodyMaterialCeramic.color.setHex(0x143329);
       if (this.ambientLight) this.ambientLight.color.setHex(0x1a3d33);
     } else {
-      this.bodyMaterial.color.setHex(0xf2ece1);
+      this.bodyMaterialCeramic.color.setHex(0xf2ece1);
       if (this.ambientLight) this.ambientLight.color.setHex(0xf7f2e8);
     }
   }
@@ -1229,7 +1613,8 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
   // Animation Loop
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
-    if (!this.isVisible) return;
+    if (!this.isVisible && this.initialRenderDone) return;
+    this.initialRenderDone = true;
 
     const time = performance.now() * 0.001;
 
@@ -1241,12 +1626,28 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
     this.bodyGroup.rotation.y += (this.targetRotationY - this.bodyGroup.rotation.y) * 0.08;
     this.bodyGroup.rotation.x += (this.targetRotationX - this.bodyGroup.rotation.x) * 0.08;
 
+    // Smooth Camera Glide Interpolation (Cinematic framing)
+    this.camera.position.lerp(this.cameraTargetPos, 0.05);
+    this.currentLookAt.lerp(this.cameraLookAtTarget, 0.05);
+    this.camera.lookAt(this.currentLookAt);
+
     // Gentle vertical breathing float
     this.bodyGroup.position.y = Math.sin(time * 1.5) * 0.018;
 
-    // Hotspot rings subtle pulsation
+    // Hologram laser scanner animation
+    if (this.visualMode() === 'hologram' && this.scannerRing) {
+      this.scannerRing.position.y = Math.sin(time * 1.4) * 1.1 + 0.6;
+      (this.scannerRing.material as THREE.MeshBasicMaterial).opacity = 0.5 + Math.sin(time * 3) * 0.28;
+    }
+
+    // Tension-dependent pulse frequency
+    const pulseSpeed = this.currentTension() === 'severa' ? 5.2 : this.currentTension() === 'leve' ? 2.0 : 3.2;
+
+    // Hotspot rings subtle pulsation & facing camera
     this.hotspotMeshes.forEach((h, index) => {
-      const pulseScale = 1.0 + Math.sin(time * 3 + index) * 0.18;
+      const isSelected = h.config.id === this.activeZoneId;
+      const speed = isSelected ? pulseSpeed : 2.5;
+      const pulseScale = 1.0 + Math.sin(time * speed + index) * (isSelected ? 0.25 : 0.12);
       h.pulseRing.scale.set(pulseScale, pulseScale, pulseScale);
       h.pulseRing.lookAt(this.camera.position);
       h.haloRing.lookAt(this.camera.position);
@@ -1257,7 +1658,7 @@ export class BodyCanvas3dComponent implements OnInit, OnDestroy {
       const count = this.lymphPositions.length / 3;
       for (let i = 0; i < count; i++) {
         const yIdx = i * 3 + 1;
-        this.lymphPositions[yIdx] += 0.008; // Flow upward to heart/lymph nodes
+        this.lymphPositions[yIdx] += 0.008;
         if (this.lymphPositions[yIdx] > 1.85) {
           this.lymphPositions[yIdx] = -0.75;
         }

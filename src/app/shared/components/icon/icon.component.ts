@@ -124,6 +124,33 @@ import { CommonModule } from '@angular/common';
         @case ('moon') {
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
         }
+        @case ('volume-2') {
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        }
+        @case ('volume-x') {
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="22" x2="16" y1="9" y2="15"/>
+          <line x1="16" x2="22" y1="9" y2="15"/>
+        }
+        @case ('zoom-in') {
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+          <line x1="11" x2="11" y1="8" y2="14"/>
+          <line x1="8" x2="14" y1="11" y2="11"/>
+        }
+        @case ('zoom-out') {
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+          <line x1="8" x2="14" y1="11" y2="11"/>
+        }
+        @case ('maximize-2') {
+          <polyline points="15 3 21 3 21 9"/>
+          <polyline points="9 21 3 21 3 15"/>
+          <line x1="21" x2="14" y1="3" y2="10"/>
+          <line x1="3" x2="10" y1="21" y2="14"/>
+        }
         @default {
           <circle cx="12" cy="12" r="10"/>
           <path d="m9 12 2 2 4-4"/>

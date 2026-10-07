@@ -265,6 +265,20 @@
   align-items: center;
   gap: 0.45rem;
   font-weight: 500;
+  text-decoration: none;
+  color: inherit;
+
+  &.trust-3d-link {
+    color: var(--color-botanical);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-forest);
+      transform: translateY(-1px);
+    }
+  }
 }
 
 /* Right Column: Visual Portrait */

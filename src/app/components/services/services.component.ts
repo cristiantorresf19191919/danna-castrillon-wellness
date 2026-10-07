@@ -18,4 +18,31 @@ export class ServicesComponent {
   getWhatsAppBookingUrl(service: ServiceItem): string {
     return this.wellnessService.getWhatsAppUrl(service.whatsappMsg);
   }
+
+  exploreIn3D(service: ServiceItem): void {
+    if (service.id === 'drenaje-linfatico') {
+      this.wellnessService.selectMassageLayer('linfatico');
+      this.wellnessService.selectBodyZone('piernas');
+      this.wellnessService.selectTensionLevel('leve');
+    } else if (service.id === 'masaje-relajante') {
+      this.wellnessService.selectMassageLayer('relajacion');
+      this.wellnessService.selectBodyZone('cuello');
+      this.wellnessService.selectTensionLevel('leve');
+    } else if (service.id === 'terapia-fisica') {
+      this.wellnessService.selectMassageLayer('muscular');
+      this.wellnessService.selectBodyZone('espalda-baja');
+      this.wellnessService.selectTensionLevel('severa');
+    } else {
+      this.wellnessService.selectMassageLayer('muscular');
+      this.wellnessService.selectBodyZone('hombros');
+      this.wellnessService.selectTensionLevel('moderada');
+    }
+
+    if (typeof document !== 'undefined') {
+      const element = document.getElementById('diagnostico-cuerpo');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
 }

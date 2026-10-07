@@ -1,7 +1,7 @@
 .canvas-3d-wrapper {
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 520px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,7 +13,7 @@
   transition: background 0.35s ease;
 
   @media (max-width: 600px) {
-    height: 420px;
+    height: 440px;
   }
 }
 
@@ -37,24 +37,25 @@ html.dark .canvas-3d-wrapper {
 /* Controls Overlay */
 .controls-overlay {
   position: absolute;
-  top: 1rem;
+  top: 0.85rem;
   left: 0.85rem;
   right: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.65rem;
+  gap: 0.5rem;
   z-index: 10;
   pointer-events: none;
 }
 
 .layers-pill,
+.modes-pill,
 .actions-pill {
   display: inline-flex;
   align-items: center;
   padding: 4px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(232, 221, 205, 0.9);
@@ -66,27 +67,35 @@ html.dark .canvas-3d-wrapper {
 }
 
 :host-context(html.dark) .layers-pill,
+:host-context(html.dark) .modes-pill,
 :host-context(html.dark) .actions-pill,
 html.dark .layers-pill,
+html.dark .modes-pill,
 html.dark .actions-pill {
   background: rgba(18, 44, 36, 0.92) !important;
   border-color: rgba(175, 196, 168, 0.25) !important;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4) !important;
 }
 
-.layer-btn {
+.layer-btn,
+.mode-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.38rem 0.8rem;
+  gap: 0.32rem;
+  padding: 0.36rem 0.72rem;
   border-radius: var(--radius-pill, 9999px);
   border: none;
   background: transparent;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-charcoal-muted, #5a6460);
   cursor: pointer;
   transition: all 0.2s ease;
+
+  .mode-icon {
+    font-size: 0.78rem;
+    line-height: 1;
+  }
 
   &:hover {
     color: var(--color-forest, #123c32);
@@ -101,7 +110,9 @@ html.dark .actions-pill {
 }
 
 :host-context(html.dark) .layer-btn,
-html.dark .layer-btn {
+:host-context(html.dark) .mode-btn,
+html.dark .layer-btn,
+html.dark .mode-btn {
   color: #a0b2aa;
 
   &:hover {
@@ -120,18 +131,18 @@ html.dark .layer-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.36rem 0.75rem;
+  padding: 0.34rem 0.65rem;
   border-radius: var(--radius-pill, 9999px);
   border: none;
   background: transparent;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-charcoal-muted, #5a6460);
   cursor: pointer;
   transition: all 0.2s ease;
 
   &.icon-only {
-    padding: 0.36rem 0.5rem;
+    padding: 0.34rem 0.48rem;
   }
 
   &:hover {
@@ -143,6 +154,12 @@ html.dark .layer-btn {
     background: #ffffff;
     color: var(--color-forest, #123c32);
     box-shadow: 0 2px 8px rgba(18, 60, 50, 0.12);
+  }
+
+  &.sound-toggle-btn.sound-on {
+    background: #afc4a8;
+    color: #123c32;
+    font-weight: 700;
   }
 }
 
@@ -158,6 +175,11 @@ html.dark .action-btn {
     background: #1e5c46 !important;
     color: #ffffff !important;
   }
+
+  &.sound-toggle-btn.sound-on {
+    background: #2dd4bf !important;
+    color: #0d261e !important;
+  }
 }
 
 /* Layer Indicator Badge (Bottom Left) */
@@ -169,7 +191,7 @@ html.dark .action-btn {
   align-items: center;
   gap: 0.45rem;
   padding: 0.4rem 0.85rem;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(232, 221, 205, 0.85);
@@ -205,6 +227,43 @@ html.dark .layer-indicator-badge {
   border-color: rgba(175, 196, 168, 0.25) !important;
   color: #F7F2E8 !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Focus Indicator Pill */
+.focus-indicator-pill {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  background: rgba(18, 60, 50, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(175, 196, 168, 0.4);
+  border-radius: var(--radius-pill, 9999px);
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: #F7F2E8;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: scale(1.03);
+    background: #123C32;
+    border-color: #AFC4A8;
+  }
+
+  .focus-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #AFC4A8;
+    box-shadow: 0 0 8px #AFC4A8;
+  }
 }
 
 /* Floating Tooltip */
@@ -302,42 +361,52 @@ html.dark .interaction-guide {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 680px) {
   .canvas-3d-wrapper {
-    height: 410px;
+    height: 440px;
   }
 
   .controls-overlay {
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
+    top: 0.45rem;
+    left: 0.45rem;
+    right: 0.45rem;
+    gap: 0.35rem;
   }
 
   .layers-pill,
+  .modes-pill,
   .actions-pill {
     padding: 3px;
     gap: 2px;
   }
 
-  .layer-btn {
-    padding: 0.3rem 0.55rem;
-    font-size: 0.7rem;
+  .layer-btn,
+  .mode-btn {
+    padding: 0.28rem 0.52rem;
+    font-size: 0.69rem;
 
     .btn-text {
-      font-size: 0.68rem;
+      font-size: 0.67rem;
     }
   }
 
   .action-btn {
-    padding: 0.28rem 0.48rem;
-    font-size: 0.68rem;
+    padding: 0.26rem 0.45rem;
+    font-size: 0.67rem;
   }
 
   .layer-indicator-badge {
-    bottom: 0.5rem;
-    left: 0.5rem;
-    font-size: 0.68rem;
-    padding: 0.3rem 0.65rem;
+    bottom: 0.45rem;
+    left: 0.45rem;
+    font-size: 0.67rem;
+    padding: 0.28rem 0.6rem;
+  }
+
+  .focus-indicator-pill {
+    bottom: 0.45rem;
+    right: 0.45rem;
+    font-size: 0.67rem;
+    padding: 0.28rem 0.6rem;
   }
 
   .interaction-guide {

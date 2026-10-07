@@ -122,6 +122,7 @@
             <app-body-canvas-3d
               [activeZoneId]="activeZone().id"
               [activeLayer]="activeMassageLayer().id"
+              [activeTension]="selectedTension()"
               (zoneSelected)="selectZone($event)"
               (viewModeChange)="setViewMode($event)"
               (layerChange)="selectLayer($event)"
@@ -226,6 +227,43 @@
         </div>
 
         <div class="rec-body-grid">
+          <!-- Interactive Tension Simulator -->
+          <div class="tension-simulator-box">
+            <div class="tension-sim-header">
+              <span class="tension-sim-label">
+                <app-icon name="activity" [size]="14" customClass="text-botanical" />
+                Nivel de tensión o dolor detectado:
+              </span>
+              <span class="tension-badge-pill" [class]="'badge-' + selectedTension()">
+                {{ activeTensionOption().badge }}
+              </span>
+            </div>
+
+            <!-- Segmented Level Buttons -->
+            <div class="tension-levels-row" role="radiogroup" aria-label="Nivel de tensión muscular">
+              @for (opt of tensionOptions(); track opt.id) {
+                <button
+                  type="button"
+                  class="tension-opt-btn"
+                  [class.active]="selectedTension() === opt.id"
+                  [class]="'opt-' + opt.id"
+                  (click)="selectTension(opt.id)"
+                >
+                  <span class="tension-btn-dot"></span>
+                  <div class="tension-btn-text">
+                    <span class="tension-btn-title">{{ opt.label }}</span>
+                    <span class="tension-btn-sub">{{ opt.sessionMin }}</span>
+                  </div>
+                </button>
+              }
+            </div>
+
+            <div class="tension-detail-insight">
+              <span class="insight-highlight">{{ activeTensionOption().subtitle }}:</span>
+              <span class="insight-text">{{ activeTensionOption().therapeuticNote }}</span>
+            </div>
+          </div>
+
           <!-- Active 3D Point Specific Benefit -->
           @if (activePoint(); as point) {
             <div class="rec-point-spotlight">
@@ -274,9 +312,15 @@
             <div class="treatment-content">
               <strong>Tratamiento recomendado:</strong>
               <p>{{ activeZone().recommendation }}</p>
-              <span class="treatment-service-tag">
-                Servicio sugerido: {{ activeMassageLayer().recommendedService }}
-              </span>
+              <div class="treatment-tags-row">
+                <span class="treatment-service-tag">
+                  Servicio sugerido: {{ activeTensionOption().recommendedService }}
+                </span>
+                <span class="treatment-duration-tag">
+                  <app-icon name="clock" [size]="12" />
+                  Duración sugerida: {{ activeTensionOption().sessionMin }}
+                </span>
+              </div>
             </div>
           </div>
 
