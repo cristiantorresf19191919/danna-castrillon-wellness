@@ -16,7 +16,11 @@ export class NavbarComponent {
   readonly themeService = inject(ThemeService);
 
   readonly isScrolled = signal(false);
+  readonly isHidden = signal(false);
   readonly isMobileMenuOpen = signal(false);
+
+  private lastScrollY = 0;
+  private readonly scrollThreshold = 8;
 
   readonly navLinks = [
     { label: 'Servicios', href: '#servicios' },
@@ -30,8 +34,30 @@ export class NavbarComponent {
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    const scrollY = window.scrollY || document.documentElement.scrollTop;
-    this.isScrolled.set(scrollY > 50);
+    const currentScrollY = window.scrollY || document.documentElement.scrollTop;
+
+    // Toggle scrolled styling
+    this.isScrolled.set(currentScrollY > 30);
+
+    // If mobile menu is open, never hide
+    if (this.isMobileMenuOpen()) {
+      this.isHidden.set(false);
+      this.lastScrollY = currentScrollY;
+      return;
+    }
+
+    const diff = currentScrollY - this.lastScrollY;
+
+    // Scrolling DOWN past 80px -> hide header to free up full mobile screen
+    if (diff > this.scrollThreshold && currentScrollY > 80) {
+      this.isHidden.set(true);
+    }
+    // Scrolling UP or at top -> show header immediately
+    else if (diff < -this.scrollThreshold || currentScrollY <= 30) {
+      this.isHidden.set(false);
+    }
+
+    this.lastScrollY = Math.max(0, currentScrollY);
   }
 
   toggleTheme(): void {
@@ -41,6 +67,7 @@ export class NavbarComponent {
   toggleMobileMenu(): void {
     this.isMobileMenuOpen.update(v => !v);
     if (this.isMobileMenuOpen()) {
+      this.isHidden.set(false);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';

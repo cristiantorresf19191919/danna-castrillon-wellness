@@ -126,6 +126,11 @@ a {
   text-decoration: none;
 }
 
+/* Accessible and comfortable scroll margin for anchor targets */
+section[id], div[id] {
+  scroll-margin-top: clamp(3.5rem, 8vh, 5.5rem);
+}
+
 /* Typography Helpers */
 .font-serif {
   font-family: var(--font-serif);
