@@ -11,7 +11,7 @@
   overflow: hidden;
   box-shadow: 0 24px 60px rgba(18, 60, 50, 0.25);
   border: 1px solid rgba(175, 196, 168, 0.25);
-  color: var(--color-ivory);
+  color: #F7F2E8;
 }
 
 .booking-grid {
@@ -60,12 +60,12 @@
   letter-spacing: -0.015em;
 
   .headline-part-1 {
-    color: var(--color-ivory);
+    color: #F7F2E8;
     font-weight: 500;
   }
 
   .headline-part-2 {
-    color: var(--color-sage);
+    color: #AFC4A8;
     font-weight: 600;
     font-style: italic;
   }
@@ -74,14 +74,14 @@
 .booking-lead {
   font-size: 1.05rem;
   line-height: 1.65;
-  color: rgba(247, 242, 232, 0.82);
+  color: #E8DDCD;
   max-width: 520px;
 }
 
 /* Planner Selector Box */
 .booking-planner-box {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
   display: flex;
@@ -99,9 +99,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     font-weight: 600;
-    color: var(--color-ivory);
+    color: #F7F2E8 !important;
+    letter-spacing: 0.01em;
   }
 
   .options-pills-row {
@@ -110,27 +111,28 @@
     gap: 0.5rem;
 
     .opt-pill {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 500;
-      color: rgba(247, 242, 232, 0.85);
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #F7F2E8;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: var(--radius-pill);
-      padding: 0.45rem 0.95rem;
+      padding: 0.45rem 1rem;
       cursor: pointer;
       transition: all 0.25s ease;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.18);
         color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.3);
       }
 
       &.active {
-        background: var(--color-sage);
-        color: var(--color-forest);
+        background: #AFC4A8 !important;
+        color: #123C32 !important;
         font-weight: 700;
-        border-color: var(--color-sage);
-        box-shadow: 0 4px 14px rgba(175, 196, 168, 0.3);
+        border-color: #AFC4A8 !important;
+        box-shadow: 0 4px 14px rgba(175, 196, 168, 0.4);
       }
     }
   }
@@ -267,7 +269,7 @@
       font-family: var(--font-serif);
       font-size: 1.15rem;
       font-style: italic;
-      color: var(--color-ivory);
+      color: #F7F2E8 !important;
       line-height: 1.35;
     }
 
@@ -277,7 +279,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--color-sage);
+      color: #AFC4A8;
     }
   }
 }

@@ -518,6 +518,111 @@ html.dark {
     border-top-color: var(--border-subtle) !important;
   }
 
+  /* Booking Master Card High Contrast Guarantees */
+  .booking-master-card {
+    background: linear-gradient(145deg, #0E2922 0%, #071914 100%) !important;
+    border-color: rgba(175, 196, 168, 0.3) !important;
+    color: #F7F2E8 !important;
+
+    .headline-part-1,
+    .badge-quote-line {
+      color: #F7F2E8 !important;
+    }
+
+    .booking-lead {
+      color: #E8DDCD !important;
+    }
+
+    .planner-label {
+      color: #F7F2E8 !important;
+    }
+
+    .opt-pill {
+      color: #F7F2E8 !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.18) !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.18) !important;
+        color: #ffffff !important;
+      }
+
+      &.active {
+        background: #AFC4A8 !important;
+        color: #123C32 !important;
+        border-color: #AFC4A8 !important;
+        font-weight: 700 !important;
+      }
+    }
+
+    .reassurance-item {
+      color: rgba(247, 242, 232, 0.85) !important;
+    }
+  }
+
+  /* Permanent Luxury Nocturnal Footer */
+  .site-footer {
+    background-color: #07130F !important;
+    color: #F7F2E8 !important;
+    border-top-color: rgba(175, 196, 168, 0.15) !important;
+
+    .footer-mission-text,
+    .footer-nav-anchor,
+    .contact-entry div span {
+      color: #E8DDCD !important;
+    }
+
+    .footer-col-title,
+    .contact-entry div .entry-sub,
+    .footer-badge span {
+      color: #AFC4A8 !important;
+    }
+
+    .contact-entry div strong {
+      color: #F7F2E8 !important;
+    }
+
+    .social-pill-link {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.18) !important;
+      color: #F7F2E8 !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+      }
+    }
+
+    .footer-bottom-bar {
+      color: rgba(247, 242, 232, 0.75) !important;
+    }
+  }
+
+  .zone-badge {
+    background-color: var(--bg-surface-subtle) !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--color-forest) !important;
+  }
+
+  .bogota-artistic-card {
+    background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-primary) 100%) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .canvas-advice-bar {
+    background-color: var(--bg-surface-subtle) !important;
+    border-color: var(--border-subtle) !important;
+
+    .advice-text {
+      color: var(--color-forest) !important;
+    }
+  }
+
+  .service-card.card-featured {
+    background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-subtle) 100%) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
   .footer-logo-img {
     filter: brightness(0) invert(1) !important;
   }
